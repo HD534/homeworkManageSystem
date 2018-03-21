@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.PolicyMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.Policy">
+		<id column="policyId" property="policyid" jdbcType="BIGINT" />
+		<result column="policyCode" property="policycode" jdbcType="CHAR" />
+		<result column="policyProductSumAmt" property="policyproductsumamt"
+			jdbcType="DECIMAL" />
+		<result column="transactionDate" property="transactiondate"
+			jdbcType="DATE" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		policyId, policyCode, policyProductSumAmt, transactionDate
+	</sql>
+
+	<select id="listPolicy" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Policy
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from Policy
+		where policyId = #{policyid,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from Policy
+		where policyId = #{policyid,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.andy.model.Policy">
+		insert into Policy (policyId, policyCode, policyProductSumAmt,
+		transactionDate)
+		values (#{policyid,jdbcType=BIGINT}, #{policycode,jdbcType=CHAR},
+		#{policyproductsumamt,jdbcType=DECIMAL},
+		#{transactiondate,jdbcType=DATE})
+	</insert>
+	<insert id="insertSelective" parameterType="com.andy.model.Policy">
+		insert into Policy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="policyid != null">
+				policyId,
+			</if>
+			<if test="policycode != null">
+				policyCode,
+			</if>
+			<if test="policyproductsumamt != null">
+				policyProductSumAmt,
+			</if>
+			<if test="transactiondate != null">
+				transactionDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="policyid != null">
+				#{policyid,jdbcType=BIGINT},
+			</if>
+			<if test="policycode != null">
+				#{policycode,jdbcType=CHAR},
+			</if>
+			<if test="policyproductsumamt != null">
+				#{policyproductsumamt,jdbcType=DECIMAL},
+			</if>
+			<if test="transactiondate != null">
+				#{transactiondate,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Policy">
+		update Policy
+		<set>
+			<if test="policycode != null">
+				policyCode = #{policycode,jdbcType=CHAR},
+			</if>
+			<if test="policyproductsumamt != null">
+				policyProductSumAmt = #{policyproductsumamt,jdbcType=DECIMAL},
+			</if>
+			<if test="transactiondate != null">
+				transactionDate = #{transactiondate,jdbcType=DATE},
+			</if>
+		</set>
+		where policyId = #{policyid,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.Policy">
+		update Policy
+		set policyCode = #{policycode,jdbcType=CHAR},
+		policyProductSumAmt = #{policyproductsumamt,jdbcType=DECIMAL},
+		transactionDate = #{transactiondate,jdbcType=DATE}
+		where policyId = #{policyid,jdbcType=BIGINT}
+	</update>
+</mapper>
