@@ -151,7 +151,7 @@
 					//minWidth : 100
 					} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
 					, {
-						field : 'grade',
+						field : 'score',
 						width : '8%',
 						title : '分数',
 						//type : 'numbers',
@@ -167,6 +167,9 @@
 						style: 'display: none'
 					},{
 						field : 'fileid',minWidth: '0', width: '0', type: 'space',
+						style: 'display: none'
+					},{
+						field : 'studentId',minWidth: '0', width: '0', type: 'space',
 						style: 'display: none'
 					} ] ]
 				});

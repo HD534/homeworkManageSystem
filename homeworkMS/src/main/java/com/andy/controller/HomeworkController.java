@@ -228,7 +228,7 @@ public class HomeworkController {
 		String studentId = (String) paramMap.get("studentId");
 		String homeworkId = (String) paramMap.get("homeworkId");
 		
-		int score = (int) paramMap.get("score");
+		int score = Integer.parseInt((String)paramMap.get("score"));
 		
 		//参数错误
 		if(studentId==null||homeworkId==null) return  JsonResult.createByError();
@@ -243,8 +243,8 @@ public class HomeworkController {
 		paramMap.put("createDate", createDate);
 		paramMap.put("studentHomeworkScoreId", studentHomeworkScoreId);
 		
-//		int ret = homeworkSevice.insertStudentHomeworkScore(paramMap);
-		int ret = 1;//homeworkSevice.insertStudentHomeworkScore(paramMap);
+		int ret = homeworkSevice.insertStudentHomeworkScore(paramMap);
+		//int ret = 1;//homeworkSevice.insertStudentHomeworkScore(paramMap);
 		
 		return ret == 1?JsonResult.createBySuccess():JsonResult.createByError();
 		
