@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.StudentMapper" >
+  <resultMap id="BaseResultMap" type="com.andy.model.Student" >
+    <id column="studentId" property="studentId" jdbcType="VARCHAR" />
+    <result column="userId" property="userId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    studentId, userId
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where studentId = #{studentId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from student
+    where studentId = #{studentId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.andy.model.Student" >
+    insert into student (studentId, userId)
+    values (#{studentId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.andy.model.Student" >
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="studentId != null" >
+        studentId,
+      </if>
+      <if test="userId != null" >
+        userId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="studentId != null" >
+        #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="insertStudentClass" parameterType="Map" >
+    insert into studentclass (studentClassId,studentId, classId)
+		
+    values (#{studentClassId,jdbcType=VARCHAR},#{studentId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Student" >
+    update student
+    <set >
+      <if test="userId != null" >
+        userId = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where studentId = #{studentId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.andy.model.Student" >
+    update student
+    set userId = #{userId,jdbcType=VARCHAR}
+    where studentId = #{studentId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="listStudent" resultType="map" parameterType="Map" >
+     select 
+    u.*,c.className,i.instituteName
+		from user u 
+    left join student s on u.userId = s.userId
+    left join studentClass sc on sc.studentId = s.studentId
+    left join tblclass c on c.classId = sc.classId
+    left join institute i on i.instituteId = u. instituteId
+    where u.userType=2
+    <if test="userCode != null">
+			and u.userCode = #{userCode,jdbcType=VARCHAR}
+	</if>
+	<if test="rowFrom != null">
+			order by c.className desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+	</if>
+	
+  </select>
+  
+   <select id="listStudentCountNum" resultType="int" parameterType="Map" >
+     select 
+    	count(*)
+		from user u 
+    left join student s on u.userId = s.userId
+    left join studentClass sc on sc.studentId = s.studentId
+    left join tblclass c on c.classId = sc.classId
+    left join institute i on i.instituteId = u. instituteId
+    where u.userType=2
+    <if test="userCode != null">
+			and u.userCode = #{userCode,jdbcType=VARCHAR}
+	</if>
+	
+  </select>
+  
+</mapper>

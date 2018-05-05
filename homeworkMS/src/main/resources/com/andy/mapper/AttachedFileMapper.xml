@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.AttachedFileMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.AttachedFile">
+		<id column="fileId" property="fileId" jdbcType="VARCHAR" />
+		<result column="fileName" property="fileName" jdbcType="VARCHAR" />
+		<result column="fileRealName" property="fileRealName" jdbcType="VARCHAR" />
+		<result column="filePath" property="filePath" jdbcType="VARCHAR" />
+		<result column="fileRealPath" property="fileRealPath" jdbcType="VARCHAR" />
+		<result column="fileType" property="fileType" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="DATE" />
+		<result column="fileUploader" property="fileUploader" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		fileId, fileName, fileRealName, filePath, fileRealPath, fileType, createTime,
+		fileUploader
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from attachedfile
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from attachedfile
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.andy.model.AttachedFile">
+		insert into attachedfile (fileId, fileName, fileRealName,
+		filePath, fileRealPath, fileType,
+		createTime, fileUploader)
+		values (#{fileId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+		#{fileRealName,jdbcType=VARCHAR},
+		#{filePath,jdbcType=VARCHAR}, #{fileRealPath,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR},
+		#{createTime,jdbcType=DATE}, #{fileUploader,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.andy.model.AttachedFile">
+		insert into attachedfile
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fileId != null">
+				fileId,
+			</if>
+			<if test="fileName != null">
+				fileName,
+			</if>
+			<if test="fileRealName != null">
+				fileRealName,
+			</if>
+			<if test="filePath != null">
+				filePath,
+			</if>
+			<if test="fileRealPath != null">
+				fileRealPath,
+			</if>
+			<if test="fileType != null">
+				fileType,
+			</if>
+			<if test="createTime != null">
+				createTime,
+			</if>
+			<if test="fileUploader != null">
+				fileUploader,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fileId != null">
+				#{fileId,jdbcType=VARCHAR},
+			</if>
+			<if test="fileName != null">
+				#{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="fileRealName != null">
+				#{fileRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="filePath != null">
+				#{filePath,jdbcType=VARCHAR},
+			</if>
+			<if test="fileRealPath != null">
+				#{fileRealPath,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				#{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=DATE},
+			</if>
+			<if test="fileUploader != null">
+				#{fileUploader,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.AttachedFile">
+		update attachedfile
+		<set>
+			<if test="fileName != null">
+				fileName = #{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="fileRealName != null">
+				fileRealName = #{fileRealName,jdbcType=VARCHAR},
+			</if>
+			<if test="filePath != null">
+				filePath = #{filePath,jdbcType=VARCHAR},
+			</if>
+			<if test="fileRealPath != null">
+				fileRealPath = #{fileRealPath,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				fileType = #{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=DATE},
+			</if>
+			<if test="fileUploader != null">
+				fileUploader = #{fileUploader,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.AttachedFile">
+		update attachedfile
+		set fileName = #{fileName,jdbcType=VARCHAR},
+		fileRealName = #{fileRealName,jdbcType=VARCHAR},
+		filePath = #{filePath,jdbcType=VARCHAR},
+		fileRealPath = #{fileRealPath,jdbcType=VARCHAR},
+		fileType = #{fileType,jdbcType=VARCHAR},
+		createTime = #{createTime,jdbcType=DATE},
+		fileUploader = #{fileUploader,jdbcType=VARCHAR}
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="listAttachedFileByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from attachedFile
+		
+		order by createTime desc LIMIT #{rowFrom} , #{limit}
+	</select>
+	
+	<select id="listAttachedFileByPage1" resultMap="BaseResultMap" parameterType="Map">
+		select
+		<include refid="Base_Column_List" />
+		from attachedFile
+		 <if test="rowFrom != null" >
+       		order by createTime desc LIMIT #{rowFrom,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+     	 </if>
+		
+	</select>
+
+	<select id="selectCountNum" resultType="int">
+		select
+		count(*)
+		from
+		attachedFile
+	</select>
+
+	<select id="selectFileByfileId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from attachedFile
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</select>
+
+
+	<delete id="deleteFileByfileId" parameterType="java.lang.String">
+		delete from
+		attachedFile
+		where fileId = #{fileId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.TermMapper" >
+  <resultMap id="BaseResultMap" type="com.andy.model.Term" >
+    <id column="termId" property="termId" jdbcType="VARCHAR" />
+    <result column="termName" property="termName" jdbcType="VARCHAR" />
+    <result column="termValue" property="termValue" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    termId, termName, termValue,createDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from term
+    where termId = #{termId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByTermName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from term
+    where termName = #{termName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByTermValue" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from term
+    where termValue = #{termValue,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="listTerm" resultType="Map" >
+   
+    SELECT t.termName as name,t.termValue as id from term t order by termValue DESC
+    
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from term
+    where termId = #{termId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.andy.model.Term" >
+    insert into term (termId, termName, termValue,createDate
+      )
+    values (#{termId,jdbcType=VARCHAR}, #{termName,jdbcType=VARCHAR},#{termValue,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.andy.model.Term" >
+    insert into term
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="termId != null" >
+        termId,
+      </if>
+      <if test="termName != null" >
+        termName,
+      </if>
+      <if test="termValue != null" >
+        termValue,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="termId != null" >
+        #{termId,jdbcType=VARCHAR},
+      </if>
+      <if test="termName != null" >
+        #{termName,jdbcType=VARCHAR},
+      </if>
+      <if test="termValue != null" >
+        #{termValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Term" >
+    update term
+    <set >
+      <if test="termName != null" >
+        termName = #{termName,jdbcType=VARCHAR},
+      </if>
+      <if test="termValue != null" >
+        termValue = #{termValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=DATE},
+      </if>
+    </set>
+    where termId = #{termId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.andy.model.Term" >
+    update term
+    set termName = #{termName,jdbcType=VARCHAR},
+      termValue = #{termValue,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=DATE}
+    where termId = #{termId,jdbcType=VARCHAR}
+  </update>
+</mapper>

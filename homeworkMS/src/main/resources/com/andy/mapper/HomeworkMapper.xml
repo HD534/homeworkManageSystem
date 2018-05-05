@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.HomeworkMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.Homework">
+		<id column="homeworkId" property="homeworkId" jdbcType="VARCHAR" />
+		<result column="homeworkName" property="homeworkName" jdbcType="VARCHAR" />
+		<result column="createDate" property="createDate" jdbcType="DATE" />
+		<result column="DueDate" property="DueDate" jdbcType="DATE" />
+		<result column="publishDate" property="publishDate" jdbcType="DATE" />
+		<result column="homeworkType" property="homeworkType" jdbcType="CHAR" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.andy.model.Homework"
+		extends="BaseResultMap">
+		<result column="homeworkDesc" property="homeworkDesc" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		homeworkId, homeworkName, createDate, DueDate, publishDate,
+		homeworkType
+	</sql>
+	<sql id="Blob_Column_List">
+		homeworkDesc
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from homework
+		where homeworkId = #{homeworkId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		homework
+		where homeworkId = #{homeworkId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.andy.model.Homework">
+		insert into homework
+		(homeworkId, homeworkName, createDate,
+		DueDate, publishDate,
+		homeworkType,
+		homeworkDesc)
+		values (#{homeworkId,jdbcType=VARCHAR},
+		#{homeworkName,jdbcType=VARCHAR},
+		#{createDate,jdbcType=DATE},
+		#{DueDate,jdbcType=DATE}, #{publishDate,jdbcType=DATE},
+		#{homeworkType,jdbcType=CHAR},
+		#{homeworkDesc,jdbcType=LONGVARCHAR})
+	</insert>
+	<insert id="insertTeacherHomeworkFile" parameterType="Map">
+		insert into
+		teacherHomeworkFile (teacherHomeworkFileId,homeworkId,
+		teacherId,
+		fileId)
+		values (#{teacherHomeworkFileId,jdbcType=VARCHAR},
+		#{homeworkId,jdbcType=VARCHAR},
+		#{teacherId,jdbcType=VARCHAR},
+		#{fileId,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertCourseHomework" parameterType="Map">
+		insert into
+		courseHomework (courseHomeworkId, homeworkId,
+		courseId,createDate)
+		values (#{courseHomeworkId,jdbcType=VARCHAR},
+		#{homeworkId,jdbcType=VARCHAR},
+		#{courseId,jdbcType=VARCHAR},
+		#{createDate,jdbcType=DATE})
+	</insert>
+	<insert id="insertStudentHomeworkFile" parameterType="Map">
+		insert into
+		studenthomeworkfile (studentHomeworkFileId, studentId,
+		fileId,homeworkId)
+		values (#{studentHomeworkFileId,jdbcType=VARCHAR},
+		#{studentId,jdbcType=VARCHAR},
+		#{fileId,jdbcType=VARCHAR},
+		#{homeworkId,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertStudentHomeworkScore" parameterType="Map">
+		insert into
+		studenthomeworkscore (studentHomeworkScoreId, studentId,
+		homeworkId,creator,score  
+		<if test="comment != null">
+			comment,
+		</if>
+		createDate
+		)
+		values (#{studentHomeworkScoreId,jdbcType=VARCHAR},
+		#{studentId,jdbcType=VARCHAR},
+		#{homeworkId,jdbcType=VARCHAR},
+		#{creator,jdbcType=VARCHAR},#{score,jdbcType=VARCHAR},
+		<if test="comment != null">
+			#{comment,jdbcType=VARCHAR},
+		</if>
+		#{createDate,jdbcType=DATE}
+		)
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.andy.model.Homework">
+		insert into homework
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="homeworkId != null">
+				homeworkId,
+			</if>
+			<if test="homeworkName != null">
+				homeworkName,
+			</if>
+			<if test="createDate != null">
+				createDate,
+			</if>
+			<if test="DueDate != null">
+				DueDate,
+			</if>
+			<if test="publishDate != null">
+				publishDate,
+			</if>
+			<if test="homeworkType != null">
+				homeworkType,
+			</if>
+			<if test="homeworkDesc != null">
+				homeworkDesc,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="homeworkId != null">
+				#{homeworkId,jdbcType=VARCHAR},
+			</if>
+			<if test="homeworkName != null">
+				#{homeworkName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+			<if test="DueDate != null">
+				#{DueDate,jdbcType=DATE},
+			</if>
+			<if test="publishDate != null">
+				#{publishDate,jdbcType=DATE},
+			</if>
+			<if test="homeworkType != null">
+				#{homeworkType,jdbcType=CHAR},
+			</if>
+			<if test="homeworkDesc != null">
+				#{homeworkDesc,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Homework">
+		update homework
+		<set>
+			<if test="homeworkName != null">
+				homeworkName = #{homeworkName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				createDate = #{createDate,jdbcType=DATE},
+			</if>
+			<if test="DueDate != null">
+				DueDate = #{DueDate,jdbcType=DATE},
+			</if>
+			<if test="publishDate != null">
+				publishDate = #{publishDate,jdbcType=DATE},
+			</if>
+			<if test="homeworkType != null">
+				homeworkType = #{homeworkType,jdbcType=CHAR},
+			</if>
+			<if test="homeworkDesc != null">
+				homeworkDesc = #{homeworkDesc,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where homeworkId = #{homeworkId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.andy.model.Homework">
+		update
+		homework
+		set homeworkName = #{homeworkName,jdbcType=VARCHAR},
+		createDate = #{createDate,jdbcType=DATE},
+		DueDate =
+		#{DueDate,jdbcType=DATE},
+		publishDate = #{publishDate,jdbcType=DATE},
+		homeworkType = #{homeworkType,jdbcType=CHAR},
+		homeworkDesc =
+		#{homeworkDesc,jdbcType=LONGVARCHAR}
+		where homeworkId =
+		#{homeworkId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.Homework">
+		update homework
+		set homeworkName = #{homeworkName,jdbcType=VARCHAR},
+		createDate =
+		#{createDate,jdbcType=DATE},
+		DueDate = #{DueDate,jdbcType=DATE},
+		publishDate = #{publishDate,jdbcType=DATE},
+		homeworkType =
+		#{homeworkType,jdbcType=CHAR}
+		where homeworkId =
+		#{homeworkId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="listHomework" parameterType="Map" resultType="Map">
+		SELECT
+		h.*, thf.fileId,
+		ch.courseId,
+		c.courseName,
+		c.courseDesc,
+		u.userName,
+		t.termName,
+		i.instituteName
+		FROM
+		homework h
+		LEFT JOIN
+		teacherhomeworkfile thf ON thf.homeworkId = h.homeworkId
+		LEFT JOIN
+		coursehomework ch ON ch.homeworkId = h.homeworkId
+		LEFT JOIN course c ON
+		c.courseId = ch.courseId
+		LEFT JOIN `user` u ON u.userId = thf.teacherId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term t on
+		t.termId = ct.termId
+		LEFT JOIN courseinstitute ci on ci.courseId = c.courseId
+		LEFT JOIN institute i on i.instituteId = ci.instituteId
+		<if test="userType == 2">
+			LEFT JOIN courseclass cc on cc.courseId = c.courseId
+			LEFT JOIN studentclass sc on sc.classId = cc.classId
+			LEFT JOIN student stu on stu.studentId = sc.studentId
+		</if>
+		WHERE 1=1
+		<if test="userType == 1">
+			and u.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userType == 2">
+			and stu.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="termValue != null">
+			and t.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and u.userName like concat('%',
+			#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseId != null">
+			and c.courseId = #{courseId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseName != null">
+			and c.courseName like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY h.createDate DESC,t.termValue DESC,c.courseName DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+	<select id="listStudentHomework" parameterType="Map" resultType="Map">
+		select 
+		c.courseName,
+		tt.termName,
+		h.homeworkName,
+		h.homeworkId,
+		cla.className,
+		u.userCode,
+		u.userId,u.userName as studentName,
+		stu.studentId,
+		file.fileRealName as studentHomeworkName,
+		file.fileid,
+		file.createTime as uploadDate,
+		shs.score
+		 from studenthomeworkfile shf 
+		LEFT JOIN `user` u on u.userId = shf.studentId
+		LEFT JOIN student stu on stu.userId = u.userId
+		LEFT JOIN studentclass sc on sc.studentId = stu.studentId
+		LEFT JOIN tblclass cla on cla.classid = sc.classId
+		LEFT JOIN attachedfile file on file.fileid = shf.fileId
+		LEFT JOIN homework h on h.homeworkId = shf.homeworkId
+		LEFT JOIN coursehomework ch on ch.homeworkId = h.homeworkId
+		LEFT JOIN course c on c.courseId = ch.courseId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term tt on tt.termId = ct.termId
+        LEFT JOIN teachercourse tc on tc.courseId = c.courseId
+		LEFT JOIN teacher t on t.teacherId = tc.teacherId
+		LEFT JOIN `user` ut on ut.userId = t.userId
+		left join studenthomeworkscore shs on shs.homeworkId = h.homeworkId
+		WHERE 1=1
+		
+		<if test="userType == 1">
+			and ut.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userType == 2">
+			and stu.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="termValue != null">
+			and tt.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userCode != null">
+			and u.userCode like concat('%',
+			#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseId != null">
+			and c.courseId = #{courseId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseName != null">
+			and c.courseName like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkName != null">
+			and h.homeworkName like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homeworkId = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+		
+		ORDER BY file.createTime DESC,tt.termValue DESC,c.courseName DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.TblClassMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.TblClass">
+		<id column="classId" property="classId" jdbcType="VARCHAR" />
+		<result column="className" property="className" jdbcType="VARCHAR" />
+		<result column="createDate" property="createDate" jdbcType="DATE" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		classId, className, createDate
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from tblclass
+		where classId = #{classId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		tblclass
+		where classId = #{classId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.andy.model.TblClass">
+		insert into tblclass (classId,
+		className, createDate
+		)
+		values (#{classId,jdbcType=VARCHAR},
+		#{className,jdbcType=VARCHAR},
+		#{createDate,jdbcType=DATE}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.andy.model.TblClass">
+		insert into tblclass
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="classId != null">
+				classId,
+			</if>
+			<if test="className != null">
+				className,
+			</if>
+			<if test="createDate != null">
+				createDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="classId != null">
+				#{classId,jdbcType=VARCHAR},
+			</if>
+			<if test="className != null">
+				#{className,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.TblClass">
+		update tblclass
+		<set>
+			<if test="className != null">
+				className = #{className,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				createDate = #{createDate,jdbcType=DATE},
+			</if>
+		</set>
+		where classId = #{classId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.TblClass">
+		update tblclass
+		set className = #{className,jdbcType=VARCHAR},
+		createDate =
+		#{createDate,jdbcType=DATE}
+		where classId = #{classId,jdbcType=VARCHAR}
+	</update>
+	<select id="selectByClassName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from tblclass
+		where className = #{className,jdbcType=VARCHAR}
+	</select>
+
+	<select id="listClassByInstitute" parameterType="Map"
+		resultType="Map">
+		SELECT
+		c.className AS name,
+		c.classid AS id
+		FROM
+		tblclass c
+		LEFT JOIN classInstitute ci ON ci.classId = c.classid
+		LEFT JOIN
+		institute i ON i.instituteId = ci.instituteId
+		where i.instituteId =
+		#{instituteId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="listClass" parameterType="Map" resultType="Map">
+		SELECT
+		DISTINCT
+		c.*, i.instituteName ,stuNum.count as stuCount
+		FROM
+		tblclass c
+		LEFT JOIN classInstitute ci ON ci.classId = c.classid
+		LEFT JOIN institute i ON i.instituteId = ci.instituteId
+		LEFT JOIN (
+		SELECT count(*) as count,
+		classId
+		FROM
+		studentclass
+		GROUP BY
+		classId
+		) AS stuNum ON stuNum.classId = c.classId
+		where 1=1
+		<if test="userType == 1">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and c.className = #{className,jdbcType=VARCHAR}
+		</if>
+		<if test="rowFrom != null">
+			order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+	
+	<select id="listClassCountNum" parameterType="Map" resultType="int">
+		SELECT
+		count(*)
+		FROM
+		tblclass c
+		LEFT JOIN classInstitute ci ON ci.classId = c.classid
+		LEFT JOIN institute i ON i.instituteId = ci.instituteId
+		where 1=1
+		<if test="userType == 1">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and c.className = #{className,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+</mapper>

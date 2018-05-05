@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.SupportMapper" >
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from course
+    where courseId = #{courseId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from course
+    where courseId = #{courseId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.andy.model.Course" >
+    insert into course (courseId, courseName, createDate, 
+      courseDesc)
+    values (#{courseId,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE}, 
+      #{courseDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.andy.model.Course" >
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="courseId != null" >
+        courseId,
+      </if>
+      <if test="courseName != null" >
+        courseName,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+      <if test="courseDesc != null" >
+        courseDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="courseId != null" >
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null" >
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="courseDesc != null" >
+        #{courseDesc,jdbcType=LONGVARCHAR},
+      </if>
+      
+      
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Course" >
+    update course
+    <set >
+      <if test="courseName != null" >
+        courseName = #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="courseDesc != null" >
+        courseDesc = #{courseDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where courseId = #{courseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.andy.model.Course" >
+    update course 
+    set courseName = #{courseName,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=DATE},
+      courseDesc = #{courseDesc,jdbcType=LONGVARCHAR}
+    where courseId = #{courseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.andy.model.Course" >
+    update course
+    set courseName = #{courseName,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=DATE}
+    where courseId = #{courseId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="listCourse" parameterType="Map" resultType="Map">
+  
+  
+  	select * from course c
+    
+  	left join courseInstitute ci on ci.courseId = c.courseId
+  	left join institute i on i.instituteId = ci.instituteId
+  	 <if test="rowFrom != null" >
+       order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+      </if>
+  	
+  </select>
+  
+    <select id="listCourseByUserType" parameterType="Map" resultType="Map">
+  	select c.* from course c
+  	left join courseInstitute ci on ci.courseId = c.courseId
+  	left join institute i on i.instituteId = ci.instituteId
+    <if test="userType = 1" >
+		left join teacherCourse tc on tc.courseId = c.courseId
+		LEFT JOIN teacher t on t.teacherId = tc.teacherId
+		left join user u on u.userid = t.userId
+		where u.userId = #{userId,jdbcType=VARCHAR}
+    </if>
+
+  	<if test="rowFrom != null" >
+       order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+    </if>
+  	
+  </select>
+
+  
+   <select id="selectNum" parameterType="Map" resultType="int">
+  	select count(*) from course c
+  	<if test="userType = 1" >
+		left join teacherCourse tc on tc.courseId = c.courseId
+		LEFT JOIN teacher t on t.teacherId = tc.teacherId
+		left join user u on u.userid = t.userId
+		where u.userId = #{userId,jdbcType=VARCHAR}
+    </if>
+    
+  </select>
+ 
+  <insert id="insertCourseInstitute" parameterType="Map"  >
+    insert into courseInstitute (courseInstituteId,courseId,instituteId)
+    values ( #{courseInstituteId,jdbcType=VARCHAR} , #{courseId,jdbcType=VARCHAR} , #{instituteId,jdbcType=VARCHAR} )
+  </insert>
+  
+   <insert id="insertCourseTerm" parameterType="Map" >
+    insert into courseTerm (courseTermId,courseId,termId)
+    values ( #{courseTermId,jdbcType=VARCHAR} , #{courseId,jdbcType=VARCHAR} , #{termId,jdbcType=VARCHAR} )
+  </insert>
+  
+  
+  
+</mapper>
