@@ -78,17 +78,24 @@
 	
 	<insert id="insertStudentHomeworkScore" parameterType="Map">
 		insert into
-		studenthomeworkscore (studentHomeworkScoreId, studentId,
-		homeworkId,creator,score  
+		studenthomeworkscore (
+		studentHomeworkScoreId, 
+		studentId,
+		homeworkId,
+		score ,
+		creator,
+		
 		<if test="comment != null">
 			comment,
 		</if>
 		createDate
 		)
-		values (#{studentHomeworkScoreId,jdbcType=VARCHAR},
+		values (
+		#{studentHomeworkScoreId,jdbcType=VARCHAR},
 		#{studentId,jdbcType=VARCHAR},
 		#{homeworkId,jdbcType=VARCHAR},
-		#{creator,jdbcType=VARCHAR},#{score,jdbcType=VARCHAR},
+		#{score,jdbcType=INTEGER},
+		#{creator,jdbcType=VARCHAR},
 		<if test="comment != null">
 			#{comment,jdbcType=VARCHAR},
 		</if>
