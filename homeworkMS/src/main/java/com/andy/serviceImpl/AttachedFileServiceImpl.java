@@ -70,7 +70,7 @@ public class AttachedFileServiceImpl implements AttachedFileService {
 	}
 
 	@Override
-	public File downloadZipFile(List<String> fileIdList) throws Exception {
+	public File downloadZipFile(List<String> fileIdList,String descFileName) throws Exception {
 		ArrayList<String> fileNameList = new ArrayList<String>();
 		ArrayList<String> filePathList = new ArrayList<String>();
 
@@ -84,7 +84,8 @@ public class AttachedFileServiceImpl implements AttachedFileService {
 		}
 
 		// 获取下载文件的总压缩包
-		return ZipUtil.getZip(filePathList, fileNameList, "testZip.zip");
+		//下载文件的zip文件名
+		return ZipUtil.getZip(filePathList, fileNameList, descFileName);
 
 	}
 

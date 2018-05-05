@@ -234,14 +234,8 @@ public class HomeworkController {
 		if(studentId==null||homeworkId==null) return  JsonResult.createByError();
 		
 		String comment = (String) paramMap.get("comment");
-		
-		String studentHomeworkScoreId = UUIDUtils.getUUID();
-		String creator = (String) session.getAttribute("userId");
-		Date createDate = new Date();
-		
-		paramMap.put("creator", creator);
-		paramMap.put("createDate", createDate);
-		paramMap.put("studentHomeworkScoreId", studentHomeworkScoreId);
+		String currentUserId = (String) session.getAttribute("userId");
+		paramMap.put("currentUserId", currentUserId);
 		
 		int ret = homeworkSevice.insertStudentHomeworkScore(paramMap);
 		//int ret = 1;//homeworkSevice.insertStudentHomeworkScore(paramMap);

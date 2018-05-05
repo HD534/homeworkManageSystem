@@ -25,4 +25,8 @@ public interface HomeworkService {
 	JsonResult uploadHomework(Map paramMap);
 	
 	int insertStudentHomeworkScore(Map map);
+
+	Map checkStudentHomeworkScore(Map map);
+
+	int updateStudentHomeworkScore(Map map);
 }

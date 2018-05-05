@@ -164,6 +164,8 @@
 										$.each(data, function(index, value, array) {
 											fileIds.push(value.fileId)
 										});
+										
+										var destFileName = '文件下载.zip'
 										console.log(fileIds);
 										var form=$("<form>");//定义一个form表单  
 										form.attr("style","display:none");  
@@ -172,9 +174,14 @@
 										var input1=$("<input>");  
 										input1.attr("type","hidden");  
 										input1.attr("name","fileIds");  
-										input1.attr("value",fileIds);  
+										input1.attr("value",fileIds); 
+										var input2 = $('<input>');
+										input2.attr("type","hidden");  
+										input2.attr("name","destFileName");  
+										input2.attr("value",destFileName); 
 										$("body").append(form);//将表单放置在web中  
 										form.append(input1);  
+										form.append(input2);  
 										form.submit();//表单提交 
 										/*  $.ajax({
 											data : {'fileIds':fileIds}, 

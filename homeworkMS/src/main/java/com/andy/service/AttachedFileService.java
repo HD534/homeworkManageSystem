@@ -26,7 +26,7 @@ public interface AttachedFileService {
 	
 	int selectCountNum();
 	
-	File downloadZipFile(List<String> fileIdList) throws Exception;
+	File downloadZipFile(List<String> fileIdList,String descFileName) throws Exception;
 
 	JsonResult saveOneFile(MultipartFile file, String userId);
 	

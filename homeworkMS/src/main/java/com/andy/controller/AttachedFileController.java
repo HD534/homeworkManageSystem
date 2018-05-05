@@ -66,9 +66,9 @@ public class AttachedFileController<T> {
 	
 	@RequestMapping(value = "/attachFiles/downloadZip")
 	public ResponseEntity<byte[]> downloadZipFile(HttpServletRequest request,
-			@RequestParam(value="fileIds") String[] fileIds, Model model) throws Exception {
+			@RequestParam(value="fileIds") String[] fileIds, Model model,@RequestParam(value="destFileName") String destFileName) throws Exception {
 		List<String> fileIdList = Arrays.asList(fileIds);
-		File zipFile = attachedFileService.downloadZipFile(fileIdList);
+		File zipFile = attachedFileService.downloadZipFile(fileIdList,destFileName);
 		
 		HttpHeaders headers = new HttpHeaders();
 		//下载显示文件名，解决中文乱码的问题

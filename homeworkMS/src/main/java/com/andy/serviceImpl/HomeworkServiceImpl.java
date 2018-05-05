@@ -116,7 +116,32 @@ public class HomeworkServiceImpl implements HomeworkService {
 	@Override
 	public int insertStudentHomeworkScore(Map map) {
 		// TODO Auto-generated method stub
-		return homeworkMapper.insertStudentHomeworkScore(map);
+		//先查数据库是否有数据，有的话update，没有就insert
+		if(checkStudentHomeworkScore(map).size()==0) {
+			//插入数据
+			String studentHomeworkScoreId = UUIDUtils.getUUID();
+			map.put("studentHomeworkScoreId", studentHomeworkScoreId);
+			Date createDate = new Date();
+			map.put("createDate", createDate);
+			map.put("creator", map.get("currentUserId"));
+			return homeworkMapper.insertStudentHomeworkScore(map);
+		}
+		Date updateDate = new Date();
+		map.put("updateDate", updateDate);
+		map.put("updater", map.get("currentUserId"));
+		return updateStudentHomeworkScore(map);
+	}
+	
+	@Override
+	public Map checkStudentHomeworkScore(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.checkStudentHomeworkScore(map);
+	}
+	
+	@Override
+	public int updateStudentHomeworkScore(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.updateStudentHomeworkScore(map);
 	}
 	
 

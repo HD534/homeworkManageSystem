@@ -207,7 +207,7 @@
 						layer
 						.open({
 							type : 2,
-							title : data.courseName+'-查看学生作业情况',
+							title : data.courseName+'-学生作业情况',
 							area : [ '1000px', '550px' ],
 							content : 'listStudentHomeworkForm',
 							success : function(layero, index) {
@@ -222,6 +222,8 @@
 								listStudentHomeworkFormIndex = index;
 								body.find('#indexId').val(index);
 								body.find('#homeworkId').val(data.homeworkId);
+								
+								body.find('#courseName').val(data.courseName);
 								//iframeWindow.layui.form.render();
 								//iframeWin.setHomeworkId(data.homeworkId);
 							},

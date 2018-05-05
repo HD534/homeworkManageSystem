@@ -84,7 +84,6 @@
 		homeworkId,
 		score ,
 		creator,
-		
 		<if test="comment != null">
 			comment,
 		</if>
@@ -335,4 +334,28 @@
 			#{limit,jdbcType=INTEGER}
 		</if>
 	</select>
+	
+	<select id="checkStudentHomeworkScore" parameterType="Map" resultType="Map">
+	
+		select * from studenthomeworkscore 
+		where 
+		studentId = #{studentId,jdbcType=VARCHAR} 
+		and homeworkId = #{homeworkId,jdbcType=VARCHAR}
+	
+	</select>
+	
+	<update id="updateStudentHomeworkScore" parameterType="Map">
+		update
+		studenthomeworkscore set 
+		score = #{score,jdbcType=INTEGER} ,
+		updater = #{updater,jdbcType=VARCHAR},
+		updateDate = #{updateDate,jdbcType=DATE}
+		<if test="comment != null">
+			,comment = #{comment,jdbcType=VARCHAR}
+		</if>
+		where studentId = #{studentId,jdbcType=VARCHAR} 
+		and homeworkId = #{homeworkId,jdbcType=VARCHAR}
+		
+	</update>
+	
 </mapper>

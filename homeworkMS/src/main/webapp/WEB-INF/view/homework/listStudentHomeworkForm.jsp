@@ -40,9 +40,11 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">班级</label>
 				<div class="layui-input-inline">
-					<select name="instituteSelect" id="instituteSelect"
-						id="instituteSelect" lay-filter="instituteSelect">
+					<select name="classSelect" id="classSelect"
+						lay-filter="classSelect">
 						<option value=""></option>
+						<option value="1">班级1</option>
+						<option value="1">班级2</option>
 					</select>
 				</div>
 
@@ -53,19 +55,25 @@
 						autocomplete="off" />
 				</div>
 
-				<div class="buttonClick">
-					<div class="layui-input-inline demoTable"
-						style=" margin-left: 20px; margin-right: 20px">
-						<button type="button" class="layui-btn layui-icon" id="search-btn"
-							data-type="reload" style="margin-left: 50px">搜索 &#xe615;</button>
-					</div>
-				</div>
+				
+			<div class="layui-input-inline demoTable"
+				style=" margin-left: 20px; margin-right: 20px">
+				<button type="button" class="layui-btn layui-icon" id="search-btn"
+					data-type="reload" style="margin-left: 50px">搜索 &#xe615;</button>
+			</div>
 
+			</div>
+			<div class="layui-input-block demoTable">
+						<button type="button" class="layui-btn layui-btn-normal"
+						data-type="downLoadChecked">下载已选择</button>
+						<button type="button" class="layui-btn layui-btn-normal"
+						data-type="downLoadAll" style="margin-left:20px">全部选择</button>
 			</div>
 
 		</form>
-		<input class="layui-input layui-hide" name="homeworkId" id="homeworkId"
-						autocomplete="off" />
+		<input class="layui-input layui-hide" name="homeworkId" id="homeworkId" autocomplete="off" />
+		<input class="layui-input layui-hide" name="indexId" id="indexId" autocomplete="off" />
+		<input class="layui-input layui-hide" name="courseName" id="courseName" autocomplete="off" />
 		
 		<table class="layui-hide " id="studentHomeworkTable"
 			lay-filter="studentHomeworkTable">
@@ -216,14 +224,14 @@
 							
 						}else{
 							
-							layer.msg('不是数字 0-100')	
+							layer.msg('数值范围 0-100， 请重新填写！')	
+							setTimeout("tableReload();", 400);
 							
-							//$('.layui-laypage-btn').click();
 						}
 
 					}else{
-							layer.msg('不是数字 0-100')	
-							//$('.layui-laypage-btn').click();
+							layer.msg('不是数字，请重新填写！');	
+							setTimeout("tableReload();", 400);
 					}
 					
 					
@@ -234,6 +242,8 @@
 					
 					//layer.msg('修改分数成功!')
 				});
+				
+				
 				//监听工具条
 				table.on('tool(studentHomeworkTable)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
 					var data = obj.data //获得当前行数据
@@ -327,7 +337,12 @@
 
 				var $ = layui.$, active = {
 					reload : function() {
-						tableReload();
+						if(table.cache.studentHomeworkTable.length==0){
+							
+							layer.msg("暂无数据")
+						}else{
+							tableReload();
+						}
 					},
 					addHomeworkForm : function() {
 						layer
@@ -356,7 +371,70 @@
 										})
 									}
 								});
+					},
+					
+					downLoadChecked: function(){
+						var checkStatus = table.checkStatus('studentHomeworkTable'),
+						data = checkStatus.data;
+						if(data.length==0){
+							layer.msg('请选择下载的文件')
+						}else{
+							
+							debugger;
+							var fileIds = []; 
+							//value是遍历的数组内容；index是对应的数组索引，array是数组本身。
+							$.each(data, function(index, value, array) {
+								fileIds.push(value.fileid)
+							});
+							console.log(fileIds);
+							var classSelect = $('#classSelect').find("option:selected").text();
+							
+							var courseName = $('#courseName').val();
+							var destFileName = courseName+'-'+classSelect+(classSelect==''?'':'-')+'作业情况.zip'
+							console.log(fileIds);
+							var form=$("<form>");//定义一个form表单  
+							form.attr("style","display:none");  
+							form.attr("method","post");  
+							form.attr("action",'attachFiles/downloadZip');  
+							var input1=$("<input>");  
+							input1.attr("type","hidden");  
+							input1.attr("name","fileIds");  
+							input1.attr("value",fileIds); 
+							var input2 = $('<input>');
+							input2.attr("type","hidden");  
+							input2.attr("name","destFileName");  
+							input2.attr("value",destFileName); 
+							$("body").append(form);//将表单放置在web中  
+							form.append(input1);  
+							form.append(input2);  
+							//form.submit();//表单提交 
+							/*  $.ajax({
+								data : {'fileIds':fileIds}, 
+								url : 'attachFiles/downloadZip',
+								traditional:true,
+								type : 'POST',
+								success : function(data) {
+									debugger
+									console.log(data);
+								}
+							}); */ 
+							layer.msg('下载')
+						}
+					},
+					downLoadAll: function(){
+						if(table.cache.studentHomeworkTable.length==0){
+							
+							layer.msg("暂无数据")
+						}else{
+							debugger
+							layer.confirm('确定全部下载吗', function(index) {
+								layer.msg("全部下载")
+								layer.close(index);
+								//向服务端发送下载指令
+							});
+						}
 					}
+					
 
 				};
 
