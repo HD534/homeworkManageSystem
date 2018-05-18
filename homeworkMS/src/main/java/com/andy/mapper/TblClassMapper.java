@@ -3,6 +3,7 @@ package com.andy.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.andy.common.JsonResult;
 import com.andy.model.TblClass;
 
 public interface TblClassMapper {
@@ -25,4 +26,6 @@ public interface TblClassMapper {
     List<Map> listClass(Map map);
     
     int listClassCountNum(Map map);
+
+	int addNewClass(Map paramMap);
 }

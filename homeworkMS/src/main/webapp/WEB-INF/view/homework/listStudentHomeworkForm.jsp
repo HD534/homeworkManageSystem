@@ -51,7 +51,7 @@
 
 				<label class="layui-form-label">学号</label>
 				<div class="layui-input-inline">
-					<input class="layui-input" name="courseName" id="courseName"
+					<input class="layui-input" name="userCode" id="userCode"
 						autocomplete="off" />
 				</div>
 
@@ -98,7 +98,6 @@
 				debugger;
 				homeworkId = homeworkId;
 				$('#homeworkId').val(homeworkId);
-				tableReload(homeworkId)
 			}
 
 			window.setHomeworkId = setHomeworkId;
@@ -182,9 +181,35 @@
 					} ] ]
 				});
 				
-				debugger;
-				var homeId = $('#homeworkId').val();
-				setTimeout("tableReload();", 200);
+				function studentHomeworkTableReload() {
+					
+					var userCode_val = $('#userCode').val();
+					userCode_val = userCode_val == null ? null
+							: userCode_val == '' ? null : userCode_val;
+					
+					
+					var homeworkId_val = $('#homeworkId').val();
+
+					debugger;
+					//执行重载
+					table.reload('studentHomeworkTable', {
+						url : 'listStudentHomework',
+						page : {
+							curr : 1
+						//重新从第 1 页开始
+						},
+						method : 'POST',
+						where : {
+							userCode : userCode_val,
+							homeworkId : $('#homeworkId').val()
+						}
+					});
+				};
+				
+				window.studentHomeworkTableReload = studentHomeworkTableReload;
+				
+				
+				setTimeout("studentHomeworkTableReload()", 200);
 
 				//监听修改分数
 				table.on('edit(studentHomeworkTable)', function(obj) { 
@@ -225,13 +250,13 @@
 						}else{
 							
 							layer.msg('数值范围 0-100， 请重新填写！')	
-							setTimeout("tableReload();", 400);
+							setTimeout("studentHomeworkTableReload()", 400);
 							
 						}
 
 					}else{
 							layer.msg('不是数字，请重新填写！');	
-							setTimeout("tableReload();", 400);
+							setTimeout("studentHomeworkTableReload()", 400);
 					}
 					
 					
@@ -294,55 +319,13 @@
 
 				
 
-				function tableReload() {
-					
-				/* 	var userName_val = $('#userName').val();
-					userName_val = userName_val == null ? null
-							: userName_val == '' ? null : userName_val;
-					var termValue_val = $('#termSelect').val();
-					termValue_val = termValue_val == null ? null
-							: termValue_val == '' ? null : termValue_val;
-					var instituteId_val = $('#instituteSelect').val();
-					instituteId_val = instituteId_val == null ? null
-							: instituteId_val == '' ? null : instituteId_val;
-					var courseName_val = $('#courseName').val();
-					courseName_val = courseName_val == null ? null
-							: courseName_val == '' ? null : courseName_val; 
-					
-					userName : userName_val,
-					termValue : termValue_val,
-					instituteId : instituteId_val,
-					courseName : courseName_val,
-					*/
-					
-					var homeworkId_val = $('#homeworkId').val();
 
-					//courseId = courseId==null?null:courseId==''?null:courseId;
-					debugger;
-					//执行重载
-					table.reload('studentHomeworkTable', {
-						url : 'listStudentHomework',
-						page : {
-							curr : 1
-						//重新从第 1 页开始
-						},
-						method : 'POST',
-						where : {
-							homeworkId : $('#homeworkId').val()
-						}
-					});
-				}
-
-				window.tableReload = tableReload
 
 				var $ = layui.$, active = {
 					reload : function() {
-						if(table.cache.studentHomeworkTable.length==0){
-							
-							layer.msg("暂无数据")
-						}else{
-							tableReload();
-						}
+						
+						studentHomeworkTableReload();
+						
 					},
 					addHomeworkForm : function() {
 						layer

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.andy.service.StudentService;
 import com.andy.service.TeacherService;
+import com.andy.utils.PageUtil;
 
 @Controller
 public class StudentController {
@@ -26,31 +27,30 @@ public class StudentController {
 	@ResponseBody
 	@RequestMapping(value = "/listStudnets")
 		//Map<String, Object> map = JSON.parseObject(json, new TypeReference<Map<String, Object>>(){});
-	public JSONObject listStudnet(Model model,@RequestBody(required=false) Map<String,Object> paramMap,
+	public JSONObject listStudnet(Model model,
 			@RequestParam(required=false,value="userName") String userName,
+			@RequestParam(required=false,value="instituteId") String instituteId,
+			@RequestParam(required=false,value="className") String className,
 			@RequestParam(required=false,value="userCode") String userCode,int page,int limit) {
 		
-		if(paramMap!=null) {
-			System.out.println(paramMap);
-		}else {
-			paramMap = new HashMap<>();
+		Map	paramMap = new HashMap<>();
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
 		}
-		page = page-1;
-		paramMap.put("rowFrom", page);
+		paramMap.put("rowFrom", rowFrom);
 		paramMap.put("limit", limit);
-		if(userName!=null) {
-			System.out.println("传过来的userName= "+userName);
-			paramMap.put("userName", userName);
-		}
-		if(userCode!=null) {
-			System.out.println("传过来的userCode= "+userCode);
-			paramMap.put("userCode", userCode.toString());
-		}
+		
+		if(className!=null&&!className.equals(""))  paramMap.put("className", className);
+		if(instituteId!=null&&!instituteId.equals(""))  paramMap.put("instituteId", instituteId);
+		if(userName!=null&&!userName.equals(""))  paramMap.put("userName", userName);
+		if(userCode!=null&&!userCode.equals(""))  paramMap.put("userCode", userCode);
 		
 		List<Map<String, String>> lm =  studentService.listStudent(paramMap);
 		int count = studentService.listStudentCountNum(paramMap);
 		System.out.println(lm.toString());
-		JSONObject json = new JSONObject();
 		json.put("data", lm);
 		json.put("count", count);
 		json.put("msg", "success");

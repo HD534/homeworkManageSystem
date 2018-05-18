@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.andy.utils.JsonResultUtil;
 import com.andy.utils.MyPropertiesUtil;
+import com.andy.utils.PageUtil;
 import com.andy.model.AttachedFile;
 //import com.andy.commom.JsonObjectForTable;
 import com.andy.common.JsonResult;
@@ -86,14 +87,17 @@ public class AttachedFileController<T> {
 	public JSONObject listFilesByPage1(Model model,int page,int limit) {
 //		List<AttachedFile> AttachedFiles =  attachedFileService.listAttachedFile();
 		Map<String,Object> paramMap = new HashMap<>();
-		page = page-1;
-		
-		paramMap.put("rowFrom", page);
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
 		paramMap.put("limit", limit);
 		List<AttachedFile> AttachedFiles = attachedFileService.listAttachedFileByPage1(paramMap);
 		//List<AttachedFile> AttachedFiles =  attachedFileService.listAttachedFileByPage(page, limit);
 		int count = attachedFileService.selectCountNum();
-		JSONObject json = new JSONObject();
 		json.put("data", AttachedFiles);
 		json.put("msg", "success");
 		json.put("code", 0);

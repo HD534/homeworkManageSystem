@@ -62,30 +62,6 @@ public class TeacherController {
 		return "uploadStudentInfoForm";
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/listCourse")
-	public JSONObject listCourse(Model model,@RequestBody(required=false) Map<String,Object>  paramMap,
-			int page,int limit,HttpSession session) {
-		if(paramMap==null) {
-			paramMap = new HashMap<>();
-		}
-		page = page-1;
-		paramMap.put("rowFrom", page);
-		paramMap.put("limit", limit);
-		paramMap.put("userType", session.getAttribute("userType"));
-		paramMap.put("userId", session.getAttribute("userId"));
-		
-		System.out.println(paramMap.toString());
-		List<Map> lm = courseService.listCourseByUserType(paramMap);
-		int count = courseService.selectNum(paramMap);
-		System.out.println(lm.toString());
-		JSONObject json = new JSONObject();
-		json.put("data", lm);
-		json.put("msg", "success");
-		json.put("code", 0);
-		json.put("count", count);
-		return json;
-	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/listTeacherByInstitute")

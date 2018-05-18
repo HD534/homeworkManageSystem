@@ -28,11 +28,20 @@ public interface HomeworkMapper {
 	
 	List<Map> listHomework(Map map);
 	
+	int listHomeworkCount(Map map);
+	
 	List<Map> listStudentHomework(Map map);
 	
+	int listStudentHomeworkCount(Map map);
+
 	int insertStudentHomeworkScore(Map map);
 
 	Map checkStudentHomeworkScore(Map map);
 
 	int updateStudentHomeworkScore(Map map);
+	
+	List<Map> listHomeworkScoreInfo(Map map);
+
+	int listHomeworkScoreCount(Map map);
+
 }

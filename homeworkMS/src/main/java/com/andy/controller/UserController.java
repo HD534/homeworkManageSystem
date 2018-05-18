@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.andy.utils.PageUtil;
 import com.andy.utils.UUIDUtils;
 import com.andy.utils.UserValidater;
 import com.alibaba.fastjson.JSONObject;
@@ -241,20 +242,26 @@ public class UserController {
 	@RequestMapping(value = "/listUser")
 	public JSONObject listUser(HttpSession session,int page,int limit,
 			@RequestParam(required=false,value="userName") String userName ,
+			@RequestParam(required=false,value="userCode") String userCode ,
 			@RequestParam(required=false,value="userType") String userType,
 			@RequestParam(required=false,value="email") String email) {
 		String userId = (String) session.getAttribute("userId");
  		Map paramMap = new HashMap<>();
-		page = page-1;
-		paramMap.put("rowFrom", page);
+ 		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
 		paramMap.put("limit", limit);
 		//添加查询条件
 		if(userName!=null&&!userName.equals(""))  paramMap.put("userName", userName);
+		if(userCode!=null&&!userCode.equals(""))  paramMap.put("userCode", userCode);
 		if(userType!=null&&!userType.equals(""))  paramMap.put("userType", userType);
 		if(email!=null&&!email.equals(""))  paramMap.put("email", email);
 		List<Map> userInfolist = userService.listUser(paramMap);
 		int count = userService.listUserCountNum(paramMap);
-		JSONObject json = new JSONObject();
 		json.put("data", userInfolist);
 		json.put("count", count);
 		json.put("msg", "success");

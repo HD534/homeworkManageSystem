@@ -117,7 +117,10 @@
 			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
 		</if>
 		<if test="className != null">
-			and c.className = #{className,jdbcType=VARCHAR}
+			and c.className like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
 		</if>
 		<if test="rowFrom != null">
 			order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
@@ -136,8 +139,11 @@
 		<if test="userType == 1">
 			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
 		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
 		<if test="className != null">
-			and c.className = #{className,jdbcType=VARCHAR}
+			and c.className like concat('%',#{className,jdbcType=VARCHAR},'%')
 		</if>
 	</select>
 

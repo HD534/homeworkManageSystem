@@ -15,10 +15,14 @@ public interface CourseService {
 
 	int assignClassCourse(String courseId, String classId);
 	
+	int checkClassCourse(Map map);
+	
 	List<Map> listClassCourse(Map map);
 
 	List<Map> listCourseByTypeAndTerm(Map paramMap);
 
 	List<Map> listCourseByParamMap(Map paramMap);
+
+	int listClassCourseNum(Map paramMap);
 
 }

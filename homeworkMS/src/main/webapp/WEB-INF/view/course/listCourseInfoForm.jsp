@@ -14,29 +14,42 @@
 </head>
 <body>
 	<div>
-
-		<form class="layui-form" action="">
+	<form class="layui-form" action="">
 			<div class="layui-form-item">
-				<label class="layui-form-label">课程名：</label>
-				<div class="layui-input-block ">
-					<input class="layui-input " name="id" id="demoReload"
-						autocomplete="off" style="width: 30%">
+				<c:if test="${userType eq 1||userType eq 0}">
+					<label class="layui-form-label">学院</label>
+					<div class="layui-input-inline">
+						<select name="instituteId" id="instituteSelect"
+							lay-filter="instituteSelect"  class="myForm">
+							<option value=""></option>
+						</select>
+					</div>
+				
+					<label class="layui-form-label">班级名称</label>
+					<div class="layui-input-inline">
+						<input class="layui-input" name="className" id="className"
+							autocomplete="off">
+					</div>
+				</c:if>
+				<label class="layui-form-label">课程名称</label>
+				<div class="layui-input-inline">
+					<input class="layui-input" name="courseName" id="courseName"
+						autocomplete="off">
 				</div>
 			</div>
 
 			<div class="buttonClick">
 				<div class="layui-input-inline demoTable"
-					style="padding: 10px; margin-left: 20px;">
-
+					style="padding: 10px; margin-left: 20px; margin-right: 20px">
 					<c:if test="${userType eq 1||userType eq 0}">
 						<button type="button" class="layui-btn layui-icon"  data-type="addNewCourse">&#xe61f;新增课程</button>
 					</c:if>
-
-					<button type="button" class="layui-btn layui-icon" id="search-btn"
+					<button type="button" class="layui-btn layui-icon"
 						data-type="reload" style="margin-left: 50px">搜索 &#xe615;</button>
 				</div>
 			</div>
 		</form>
+
 
 		<table class="layui-hide " id="courseInfoTable"
 			lay-filter="courseInfoTable">
@@ -53,13 +66,18 @@
 	<script src="layui/layui.js" charset="utf-8"></script>
 
 	<script>
-		layui.use([ 'table', 'element' ], function() {
+	
+		layui.use([ 'table', 'form', 'layer','element' ], function() {
 			var table = layui.table;
+			var form = layui.form;
+			var layer = layui.layer;
+			var $ = layui.jquery;
 			var element = layui.element;
+			getInstituteList();
 			var tableIns = table.render({
 				id : 'courseInfoTable',
 				elem : '#courseInfoTable',
-				url : 'listCourse',
+				url : 'listCourseByUserType',
 				cellMinWidth : 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
 				//,height:  'full-20'
 				,
@@ -108,6 +126,8 @@
 					toolbar : '#barDemo'
 				} ] ]
 			});
+			
+			form.render();
 
 			//监听工具条
 			table.on('tool(courseInfoTable)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -228,24 +248,36 @@
 					//}
 				}
 			});
+			
+			function courseTableReload(){
+				var className_val = $('#className').val();
+				className_val = className_val == null ? '' : className_val;
+				var courseName_val = $('#courseName').val();
+				courseName_val = courseName_val == null ? '' : courseName_val;
+				var instituteId_val = $('#instituteSelect').val();
+				instituteId_val = instituteId_val == null ? '': instituteId_val;
 
+				debugger;
+				//执行重载
+				table.reload('courseInfoTable', {
+					page : {
+						curr : 1
+					//重新从第 1 页开始
+					},
+					method : 'POST',
+					where : {
+						className : className_val,
+						instituteId : instituteId_val,
+						courseName : courseName_val
+					}
+				});
+			}
+			
+			
 			var $ = layui.$, active = {
 
 				reload : function() {
-					var demoReload = $('#demoReload');
-					debugger;
-					console.log(demoReload.val());
-
-					//执行重载
-					table.reload('courseInfoTable', {
-						page : {
-							curr : 1
-						//重新从第 1 页开始
-						},
-						where : {
-							courseName : demoReload.val()
-						}
-					});
+					courseTableReload();
 				},
 
 				addNewCourse : function() {
@@ -286,6 +318,31 @@
 				var type = $(this).data('type');
 				active[type] ? active[type].call(this) : '';
 			});
+			
+			function getInstituteList() {
+
+				$.ajax({
+					url : "getUserInstitute",
+					type : 'GET',
+					contentType : "application/json; charset=utf-8",
+					dataType : 'json',
+					success : function(responseData) {
+						debugger;
+						console.log(responseData);
+						var html = '';
+						var data = responseData.data;
+						for (var i = 0; i < data.length; i++) {
+							html += '<option value='+data[i].id+'>'
+									+ data[i].name + '</option>';
+						}
+						$("#instituteSelect").append(html);
+						/* 	$form.find('select[name=instituteName]').append(html);
+							console.log($form.find('select[name=instituteName]')) */
+						form.render('select');
+					}
+
+				})
+			}
 
 		});
 	</script>

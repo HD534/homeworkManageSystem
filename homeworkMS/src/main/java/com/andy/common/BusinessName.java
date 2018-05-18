@@ -8,7 +8,8 @@ public enum BusinessName {
 	USERNAME("姓名","username"),
 	TBLCLASS("班级","tblclass"),
 	INSTITUTE("学院","institute"),
-	SEX("性别","sex");
+	SEX("性别","sex"),
+	GRADE("年级","grade");
 	
 
 	private final String descChiness;

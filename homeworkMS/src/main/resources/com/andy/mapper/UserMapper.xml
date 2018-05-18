@@ -108,6 +108,9 @@
 		<if test="userName != null">
 			and userName like concat('%',#{userName,jdbcType=VARCHAR},'%')
 		</if>
+		<if test="userCode != null">
+			and userCode like concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
 		<if test="email != null">
 			and email like concat('%',#{email,jdbcType=VARCHAR},'%')
 		</if>

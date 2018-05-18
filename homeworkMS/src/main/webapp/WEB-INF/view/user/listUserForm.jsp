@@ -150,8 +150,7 @@
 																		//向服务端发送删除指令
 																	});
 												} else if (layEvent === 'edit') {
-													layer
-															.open({
+													layer.open({
 																type : 2,
 																area : [
 																		'600px',
@@ -169,11 +168,7 @@
 																	//iframeWin.window.setDefaultData(data);
 																	//console.log(body.html()) //得到iframe页的body内容
 																	//body.find('input').val('Hi，我是从父页来的')
-																	body
-																			.find(
-																					'#indexId')
-																			.val(
-																					index)
+																	body.find('#indexId').val(index)
 																	var sexSel = data.sex == '男' ? 1
 																			: 2;
 																	body
@@ -228,18 +223,15 @@
 
 																},
 																end : function() {
-																	layer
-																			.msg("刷新表格")
+																	layer.msg("刷新表格")
 																	//执行重载
-																	table
-																			.reload(
-																					'userTable',
-																					{
-																						page : {
-																							curr : 1
-																						//重新从第 1 页开始
-																						}
-																					});
+																	table.reload('userTable',
+																		{
+																		page : {
+																				curr : 1
+																			//重新从第 1 页开始
+																			}
+																		});
 																}
 															});
 
@@ -252,6 +244,10 @@
 									userName_val = userName_val == null ? null
 											: userName_val == '' ? null
 													: userName_val;
+									var userCode_val = $('#userCode').val();
+									userCode_val = userCode_val == null ? null
+											: userCode_val == '' ? null
+													: userCode_val;
 									var userType_val = $('#userType').val();
 									userType_val = userType_val == null ? null
 											: userType_val == '' ? null
@@ -271,12 +267,14 @@
 										method: 'POST',
 										where : {
 											userName : userName_val,
+											userCode : userCode_val,
 											userType : userType_val,
 											email : email_val
 										}
 									});
 								},
 								addNewUser : function() {
+									var openIndex ;
 									layer
 											.open({
 												type : 2,
@@ -293,14 +291,16 @@
 													// console.log(body.html()) //得到iframe页的body内容
 													//body.find('input').val('Hi，我是从父页来的')
 													debugger;
+													openIndex = index
 													body.find('#indexId').val(
 															index)
 												},
 												end : function() {
-													layer.msg("刷新表格")
+													layer.msg("刷新表格");
+													layer.close(openIndex)
 													//执行重载
 													table.reload(
-															'courseInfoTable',
+															'userTable',
 															{
 																page : {
 																	curr : 1

@@ -139,6 +139,9 @@ public class ExcelUtil {
 			case SEX:
 				businessNameList.add("sex");
 				break;
+			case GRADE:
+				businessNameList.add("grade");
+				break;
 
 			default:
 				businessNameList.add("cellValue");

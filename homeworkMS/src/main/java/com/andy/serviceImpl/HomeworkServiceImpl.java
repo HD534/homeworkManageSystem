@@ -143,6 +143,30 @@ public class HomeworkServiceImpl implements HomeworkService {
 		// TODO Auto-generated method stub
 		return homeworkMapper.updateStudentHomeworkScore(map);
 	}
+
+	@Override
+	public int listHomeworkCount(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.listHomeworkCount(map);
+	}
+
+	@Override
+	public int listStudentHomeworkCount(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.listStudentHomeworkCount(map);
+	}
+
+	@Override
+	public List<Map> listHomeworkScoreInfo(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.listHomeworkScoreInfo(map);
+	}
+
+	@Override
+	public int listHomeworkScoreCount(Map map) {
+		// TODO Auto-generated method stub
+		return homeworkMapper.listHomeworkScoreCount(map);
+	}
 	
 
 }

@@ -260,6 +260,55 @@
 			#{limit,jdbcType=INTEGER}
 		</if>
 	</select>
+	
+	<select id="listHomeworkCount" parameterType="Map" resultType="int">
+		SELECT
+		count(*)
+		FROM
+		homework h
+		LEFT JOIN
+		teacherhomeworkfile thf ON thf.homeworkId = h.homeworkId
+		LEFT JOIN
+		coursehomework ch ON ch.homeworkId = h.homeworkId
+		LEFT JOIN course c ON
+		c.courseId = ch.courseId
+		LEFT JOIN `user` u ON u.userId = thf.teacherId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term t on
+		t.termId = ct.termId
+		LEFT JOIN courseinstitute ci on ci.courseId = c.courseId
+		LEFT JOIN institute i on i.instituteId = ci.instituteId
+		<if test="userType == 2">
+			LEFT JOIN courseclass cc on cc.courseId = c.courseId
+			LEFT JOIN studentclass sc on sc.classId = cc.classId
+			LEFT JOIN student stu on stu.studentId = sc.studentId
+		</if>
+		WHERE 1=1
+		<if test="userType == 1">
+			and u.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userType == 2">
+			and stu.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="termValue != null">
+			and t.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and u.userName like concat('%',
+			#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseId != null">
+			and c.courseId = #{courseId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseName != null">
+			and c.courseName like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
 	<select id="listStudentHomework" parameterType="Map" resultType="Map">
 		select 
 		c.courseName,
@@ -327,12 +376,79 @@
 		<if test="homeworkId != null">
 			and h.homeworkId = #{homeworkId,jdbcType=VARCHAR}
 		</if>
+		<if test="className != null">
+			and cla.className like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
 		
 		ORDER BY file.createTime DESC,tt.termValue DESC,c.courseName DESC
 		<if test="rowFrom != null">
 			LIMIT #{rowFrom,jdbcType=INTEGER} ,
 			#{limit,jdbcType=INTEGER}
 		</if>
+	</select>
+	
+	<select id="listStudentHomeworkCount" parameterType="Map" resultType="int">
+		select 
+		count(*)
+		 from studenthomeworkfile shf 
+		LEFT JOIN `user` u on u.userId = shf.studentId
+		LEFT JOIN student stu on stu.userId = u.userId
+		LEFT JOIN studentclass sc on sc.studentId = stu.studentId
+		LEFT JOIN tblclass cla on cla.classid = sc.classId
+		LEFT JOIN attachedfile file on file.fileid = shf.fileId
+		LEFT JOIN homework h on h.homeworkId = shf.homeworkId
+		LEFT JOIN coursehomework ch on ch.homeworkId = h.homeworkId
+		LEFT JOIN course c on c.courseId = ch.courseId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term tt on tt.termId = ct.termId
+        LEFT JOIN teachercourse tc on tc.courseId = c.courseId
+		LEFT JOIN teacher t on t.teacherId = tc.teacherId
+		LEFT JOIN `user` ut on ut.userId = t.userId
+		WHERE 1=1
+		
+		<if test="userType == 1">
+			and ut.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userType == 2">
+			and stu.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="termValue != null">
+			and tt.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userCode != null">
+			and u.userCode like concat('%',
+			#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseId != null">
+			and c.courseId = #{courseId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseName != null">
+			and c.courseName like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkName != null">
+			and h.homeworkName like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homeworkId = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and cla.className like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		
+		
 	</select>
 	
 	<select id="checkStudentHomeworkScore" parameterType="Map" resultType="Map">
@@ -357,5 +473,137 @@
 		and homeworkId = #{homeworkId,jdbcType=VARCHAR}
 		
 	</update>
+	
+	
+	<select id="listHomeworkScoreInfo" parameterType="Map" resultType="Map">
+		SELECT i.instituteId,i.instituteName,term.termName,c.courseName,u.userCode,
+		c.courseId, class.classid,class.className,teacher.userName as teacherName,
+		h.homeworkName,u.userName as studentName,stu.studentId,shc.score,shc.`comment`,
+		case when updater is NULL THEN shc.createDate ELSE shc.updateDate END as scoreDate
+		from studenthomeworkscore shc
+		LEFT JOIN student stu on stu.studentId = shc.studentId
+		LEFT JOIN `user` u on u.userId = stu.userId
+		LEFT JOIN homework h on h.homeworkId = shc.homeworkId
+		LEFT JOIN coursehomework ch on ch.homeworkId = h.homeworkId
+		LEFT JOIN course c on c.courseId = ch.courseId
+		LEFT JOIN institute i on i.instituteId = u.instituteId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term term on term.termId = ct.termId
+		LEFT JOIN studentclass sc on sc.studentId = stu.studentId
+		LEFT JOIN tblclass class on class.classid = sc.classId
+		LEFT JOIN teachercourse tr on tr.courseId = c.courseId
+		LEFT JOIN teacher tea on tea.teacherId = tr.teacherId
+		LEFT JOIN `user` teacher on teacher.userId = tea.userId
+		WHERE 1=1
+		<if test="userType == 1">
+			and teacher.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userType == 2">
+			and u.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="termValue != null">
+			and term.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseName != null">
+			and c.courseName  like concat('%',
+			 #{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="className != null">
+			and class.className like concat('%',
+			#{className,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="homeworkName != null">
+			and h.homeworkName like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userCode != null">
+			and u.userCode like
+			concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userName != null">
+			and u.userName like
+			concat('%',#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and cla.className like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		
+		ORDER BY shc.createDate DESC, h.homeworkName DESC, c.courseName DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+	
+	<select id="listHomeworkScoreCount" parameterType="Map" resultType="int">
+		SELECT count(*) 
+		from studenthomeworkscore shc
+		LEFT JOIN student stu on stu.studentId = shc.studentId
+		LEFT JOIN `user` u on u.userId = stu.userId
+		LEFT JOIN homework h on h.homeworkId = shc.homeworkId
+		LEFT JOIN coursehomework ch on ch.homeworkId = h.homeworkId
+		LEFT JOIN course c on c.courseId = ch.courseId
+		LEFT JOIN institute i on i.instituteId = u.instituteId
+		LEFT JOIN courseterm ct on ct.courseId = c.courseId
+		LEFT JOIN term term on term.termId = ct.termId
+		LEFT JOIN studentclass sc on sc.studentId = stu.studentId
+		LEFT JOIN tblclass class on class.classid = sc.classId
+		LEFT JOIN teachercourse tr on tr.courseId = c.courseId
+		LEFT JOIN teacher tea on tea.teacherId = tr.teacherId
+		LEFT JOIN `user` teacher on teacher.userId = tea.userId
+		WHERE 1=1
+		<if test="userType == 1">
+			and teacher.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="userType == 2">
+			and u.userId =#{userId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="termValue != null">
+			and term.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="courseName != null">
+			and c.courseName  like concat('%',
+			 #{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="className != null">
+			and class.className like concat('%',
+			#{className,jdbcType=VARCHAR},'%')
+		</if>
+		
+		<if test="homeworkName != null">
+			and h.homeworkName like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userCode != null">
+			and u.userCode like
+			concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userName != null">
+			and u.userName like
+			concat('%',#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homeworkId = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+		
+	</select>
 	
 </mapper>

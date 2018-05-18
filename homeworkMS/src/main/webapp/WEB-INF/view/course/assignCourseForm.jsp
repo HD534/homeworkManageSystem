@@ -69,10 +69,10 @@
 								</div>
 							</div>
 
-							<div class="layui-form-item" style="padding: 5px">
+							<div class="layui-form-item demoTable" style="padding: 5px">
 								<div class="layui-input-block">
 									<button class="layui-btn" lay-submit="" lay-filter="formDemo">立即提交</button>
-									<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+									<button type="button" class="layui-btn layui-btn-primary" data-type="cancle" lay-filter="cancle">取消</button>
 								</div>
 							</div>
 
@@ -92,7 +92,6 @@
 			//form.render();
 			//监听提交
 			form.on('submit(formDemo)', function(data) {
-				layer.msg(JSON.stringify(data.field));
 				//console.log(JSON.stringify(data.field))
 				var paramMap = data.field
 				//console.log(JSON.stringify(paramMap))
@@ -113,9 +112,8 @@
 							console.log(data)
 							parent.layer.msg("添加成功")
 						} else {
-							layer.msg("添加失败")
+							layer.msg("添加失败,已存在")
 						}
-
 						debugger
 
 					}
@@ -180,6 +178,21 @@
 
 				}) 
 			}
+			
+			var active = {
+
+					cancle : function() {
+						
+						var indexId = $("#indexId").val();
+						parent.layer.close(indexId);
+					}
+			};
+			
+			$('.demoTable .layui-btn').on('click', function() {
+				debugger;
+				var type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
 
 		});
 	</script>

@@ -113,6 +113,13 @@
 
 	</select>
 	
+	<select id="checkClassCourse" parameterType="Map" resultType="int">
+		select 1 from course c	
+		left join courseclass cc on cc.courseId = c.courseId
+		where cc.classId =#{classId,jdbcType=VARCHAR} 
+		and cc.courseId=#{courseId,jdbcType=VARCHAR}
+	</select>
+	
 
 	<select id="listCourseByUserType" parameterType="Map"
 		resultType="Map">
@@ -153,6 +160,15 @@
 		<if test="termValue != null">
 			and te.termValue = #{termValue,jdbcType=VARCHAR}
 		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and class.className like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and c.courseName like concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
 
 		<if test="rowFrom != null">
 			order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
@@ -160,6 +176,7 @@
 		</if>
 
 	</select>
+	
 	
 	<select id="listCourseByParamMap" parameterType="Map"
 		resultType="Map">
@@ -184,8 +201,8 @@
 			and te.termValue = #{termValue,jdbcType=VARCHAR}
 		</if>
 		
-		<if test="instituteName != null">
-			and i.instituteName = #{instituteName,jdbcType=VARCHAR}
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
 		</if>
 
 		<if test="rowFrom != null">
@@ -218,9 +235,32 @@
 		LEFT JOIN USER u ON u.userId = t.userId
 		LEFT JOIN courseclass cc on cc.courseId = c.courseId
 		LEFT JOIN tblclass class on class.classid = cc.classId
-		<if test="userType == 1">
-			where u.userId = #{userId,jdbcType=VARCHAR}
+		<if test="userType == 2">
+		LEFT JOIN studentclass stuc on stuc.classId = class.classId
+		LEFT JOIN student stu on stu.studentId = stuc.studentId
+		LEFT JOIN `user` user2 on user2.userId = stu.userId
 		</if>
+		where 1=1
+		<if test="userType == 1">
+			and u.userId = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userType == 2">
+			and user2.userId = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="termValue != null">
+			and te.termValue = #{termValue,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and class.className like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and c.courseName like concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		
 	</select>
 
 	<insert id="insertCourseInstitute" parameterType="Map">
@@ -275,7 +315,50 @@
 			and u.userId = #{userId,jdbcType=VARCHAR}
 		</if>
 		<if test="className != null">
-			and cla.className = #{className,jdbcType=VARCHAR}
+			and cla.className like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and c.courseName like concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="rowFrom != null">
+			order by c.createDate desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+
+	</select>
+	
+	<select id="listClassCourseNum" parameterType="Map" resultType="int">
+		SELECT
+		c.courseId,
+		c.courseName,
+		c.courseDesc,
+		cla.className,
+		u.userName as teacherName,
+		i.instituteName
+		FROM
+		course c
+		LEFT JOIN courseClass cc ON cc.courseId = c.courseId
+		LEFT JOIN tblclass cla ON cla.classId = cc.classId
+		LEFT JOIN courseinstitute cs on cs.courseId = c.courseId
+		LEFT JOIN institute i on i.instituteId = cs.instituteId
+		LEFT JOIN teachercourse tc ON tc.courseId = c.courseId
+		LEFT JOIN teacher t on t.teacherId = tc.teacherId
+		LEFT JOIN user u on u.userId = t.userId
+		where 1=1
+		<if test="userType == 1">
+			and u.userId = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and cla.className like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and c.courseName like concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
 		</if>
 
 	</select>

@@ -71,13 +71,13 @@ public class CourseServiceImpl implements CourseService {
 		String instituteId = (String) map.get("instituteId");
 		String termValue = (String) map.get("termValue");
 		String userId = (String) map.get("userId");
-		// 获取教师信息  一定存在
+		// 获取教师信息 一定存在
 		Teacher teacher = teacherService.selectTeacherByUserId(userId);
 		// 先查询学期id 一定存在
-		//Term term = termService.selectByTermName(termName);
+		// Term term = termService.selectByTermName(termName);
 		Term term = termService.selectByTermValue(termValue);
 		String termId = term.getTermId();
-		
+
 		// 插入课程信息 包括 courseId uuid ,courseName ,courseDesc ,createDate
 		String courseId = UUIDUtils.getUUID();
 		int insertCourse = insertCourse(courseDesc, courseId, courseName);
@@ -86,7 +86,7 @@ public class CourseServiceImpl implements CourseService {
 		int insertCourseInstitute = insertCourseInstitute(courseId, instituteId);
 
 		// 插入teacherCourse teacherId courseId
-		int insertTeacherCourse = insertTeacherCourse(courseId,  teacher.getTeacherId());
+		int insertTeacherCourse = insertTeacherCourse(courseId, teacher.getTeacherId());
 
 		// 插入courseTerm courseId, termId
 		int insertCourseTerm = insertCourseTerm(courseId, termId);
@@ -135,28 +135,36 @@ public class CourseServiceImpl implements CourseService {
 		System.out.println("插入的teacherCourse信息：" + teacherCourse);
 		return courseMapper.insertTeacherCourse(teacherCourse);
 	}
-	
+
 	// 插入courseTerm courseId, termId\
 	public int insertCourseTerm(String courseId, String termId) {
-		
+
 		Map<String, Object> courseTerm = new HashMap<>();
 		courseTerm.put("courseTermId", UUIDUtils.getUUID());
 		courseTerm.put("courseId", courseId);
 		courseTerm.put("termId", termId);
 		System.out.println("插入的courseTerm信息：" + courseTerm);
-		return  courseMapper.insertCourseTerm(courseTerm);
+		return courseMapper.insertCourseTerm(courseTerm);
 	}
 
 	@Override
-	public int assignClassCourse(String courseId,String classId) {
-		Map<String, Object> courseClass = new HashMap<>();
-		courseClass.put("courseClassId", UUIDUtils.getUUID());
-		courseClass.put("courseId", courseId);
-		courseClass.put("classId", classId);
-		System.out.println("插入的courseTerm信息：" + courseClass);
-		return courseMapper.assignClassCourse(courseClass);
+	public int assignClassCourse(String courseId, String classId) {
+		Map map = new HashMap<>();
+		map.put("courseId", courseId);
+		map.put("classId", classId);
+		if (checkClassCourse(map) == 1) {
+			return 0;
+		}else {
+			Map<String, Object> courseClass = new HashMap<>();
+			courseClass.put("courseClassId", UUIDUtils.getUUID());
+			courseClass.put("courseId", courseId);
+			courseClass.put("classId", classId);
+			System.out.println("插入的courseTerm信息：" + courseClass);
+			return courseMapper.assignClassCourse(courseClass);
+		}
+
 	}
-	
+
 	@Override
 	public List<Map> listClassCourse(Map map) {
 		// TODO Auto-generated method stub
@@ -173,6 +181,18 @@ public class CourseServiceImpl implements CourseService {
 	public List<Map> listCourseByParamMap(Map paramMap) {
 		// TODO Auto-generated method stub
 		return courseMapper.listCourseByParamMap(paramMap);
+	}
+
+	@Override
+	public int listClassCourseNum(Map paramMap) {
+		// TODO Auto-generated method stub
+		return courseMapper.listClassCourseNum(paramMap);
+	}
+
+	@Override
+	public int checkClassCourse(Map map) {
+		// TODO Auto-generated method stub
+		return courseMapper.checkClassCourse(map);
 	}
 
 }

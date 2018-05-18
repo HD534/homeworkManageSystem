@@ -36,9 +36,13 @@ public interface CourseMapper {
     int assignClassCourse(Map map);
     
     List<Map> listClassCourse(Map map);
+    
+    int listClassCourseNum(Map map);
 
 	List<Map> listCourseByTypeAndTerm(Map paramMap);
 	
 	List<Map> listCourseByParamMap(Map paramMap);
+
+	int checkClassCourse(Map map);
     
 }

@@ -108,10 +108,10 @@
 										 placeholder="请选择作业上交日期" >
 									</div>
 								</div>
-								<div class="layui-form-item" style="padding: 5px">
+								<div class="layui-form-item demoTable" style="padding: 5px">
 									<div class="layui-input-block">
 										<button class="layui-btn" id="submit" lay-submit="" lay-filter="formDemo">立即提交</button>
-										<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+										<button type="button" class="layui-btn layui-btn-primary" data-type="cancle" lay-filter="cancle">取消</button>
 									</div>
 								</div>
 
@@ -259,6 +259,21 @@
 
 				}) 
 			}
+			
+			var active = {
+					cancle : function() {
+						
+						var indexId = $("#indexId").val();
+
+						parent.layer.close(indexId);
+					}
+			};
+			
+			$('.demoTable .layui-btn').on('click', function() {
+				debugger;
+				var type = $(this).data('type');
+				active[type] ? active[type].call(this) : '';
+			});
 
 
 		});

@@ -10,7 +10,11 @@ public interface HomeworkService {
 	
 	List<Map> listHomework(Map map);
 	
+	int listHomeworkCount(Map map);
+	
 	List<Map> listStudentHomework(Map map);
+	
+	int listStudentHomeworkCount(Map map);
 
 	int insertHomework(Homework homework);
 
@@ -29,4 +33,9 @@ public interface HomeworkService {
 	Map checkStudentHomeworkScore(Map map);
 
 	int updateStudentHomeworkScore(Map map);
+	
+	List<Map> listHomeworkScoreInfo(Map map);
+
+	int listHomeworkScoreCount(Map map);
+	
 }

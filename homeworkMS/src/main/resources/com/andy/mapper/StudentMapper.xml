@@ -78,11 +78,23 @@
     left join institute i on i.instituteId = u. instituteId
     where u.userType=2
     <if test="userCode != null">
-			and u.userCode = #{userCode,jdbcType=VARCHAR}
+			and u.userCode like
+			concat('%',#{userCode,jdbcType=VARCHAR},'%')
 	</if>
+    <if test="userName != null">
+			and u.userName like
+			concat('%',#{userName,jdbcType=VARCHAR},'%')
+	</if>
+    <if test="instituteId != null">
+			and i.instituteId = #{instituteId,jdbcType=VARCHAR}
+	</if>
+    <if test="className != null">
+			and c.className like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+	</if>
+	order by c.className desc 
 	<if test="rowFrom != null">
-			order by c.className desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
-			#{limit,jdbcType=INTEGER}
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,#{limit,jdbcType=INTEGER}
 	</if>
 	
   </select>

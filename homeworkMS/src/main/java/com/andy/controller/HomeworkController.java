@@ -22,10 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import com.alibaba.fastjson.JSONObject;
 import com.andy.common.JsonResult;
 import com.andy.service.AttachedFileService;
 import com.andy.service.HomeworkService;
 import com.andy.utils.DateUtils;
+import com.andy.utils.PageUtil;
 import com.andy.utils.UUIDUtils;
 
 @Controller
@@ -62,25 +64,37 @@ public class HomeworkController {
 	public String uploadCourseHomeworkForm() {
 		return "homework/uploadCourseHomeworkForm";
 	}
+	
 	@RequestMapping(value = "/listStudentHomeworkForm")
 	public String listStudentHomeworkForm() {
 		return "homework/listStudentHomeworkForm";
 	}
+
+	@RequestMapping(value = "/listHomeworkScoreForm")
+	public String listHomeworkScoreForm() {
+		return "homework/listHomeworkScoreForm";
+	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/listHomework")
-	public JsonResult listHomework(HttpSession session, int page,int limit,
+	public JSONObject listHomework(HttpSession session, int page,int limit,
 			@RequestParam(required=false,value="termValue") String termValue ,
 			@RequestParam(required=false,value="userName") String userName,
 			@RequestParam(required=false,value="instituteId") String instituteId,
 			@RequestParam(required=false,value="courseName") String courseName,
+			@RequestParam(required=false,value="className") String className,
 			@RequestParam(required=false,value="courseId") String courseId) {
 		
 		String userId = (String) session.getAttribute("userId");
 		String userType = (String) session.getAttribute("userType");
-		page = page-1;
 		Map paramMap= new HashMap<>();
-		paramMap.put("rowFrom", page);
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
 		paramMap.put("limit", limit);
 		paramMap.put("userId", userId);
 		paramMap.put("userType", userType);
@@ -88,26 +102,38 @@ public class HomeworkController {
 		if(userName!=null&&!userName.equals("")) paramMap.put("userName", userName);
 		if(instituteId!=null&&!instituteId.equals("")) paramMap.put("instituteId", instituteId);
 		if(courseName!=null&&!courseName.equals("")) paramMap.put("courseName", courseName);
+		if(className!=null&&!className.equals("")) paramMap.put("className", className);
 		if(courseId!=null&&!courseId.equals("")) paramMap.put("courseId", courseId);
 		List<Map> homeworkList = homeworkSevice.listHomework(paramMap);
-		return JsonResult.createBySuccessData(homeworkList);
+		json.put("data", homeworkList);
+		json.put("msg", "success");
+		json.put("code", 0);
+		json.put("count", homeworkSevice.listHomeworkCount(paramMap));
+		return json;
 	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/listStudentHomework")
-	public JsonResult listStudentHomework(HttpSession session, int page,int limit,
+	public JSONObject listStudentHomework(HttpSession session, int page,int limit,
 			@RequestParam(required=false,value="termValue") String termValue ,
 			@RequestParam(required=false,value="userName") String userName,
 			@RequestParam(required=false,value="homeworkName") String homeworkName,
 			@RequestParam(value="homeworkId") String homeworkId,
 			@RequestParam(required=false,value="courseName") String courseName,
+			@RequestParam(required=false,value="className") String className,
 			@RequestParam(required=false,value="userCode") String userCode,
 			@RequestParam(required=false,value="courseId") String courseId) {
 		
 		String userId = (String) session.getAttribute("userId");
 		String userType = (String) session.getAttribute("userType");
-		page = page-1;
 		Map paramMap= new HashMap<>();
-		paramMap.put("rowFrom", page);
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
 		paramMap.put("limit", limit);
 		paramMap.put("userId", userId);
 		paramMap.put("userType", userType);
@@ -118,9 +144,14 @@ public class HomeworkController {
 		if(userCode!=null&&!userCode.equals("")) paramMap.put("userCode", userCode);
 		if(courseId!=null&&!courseId.equals("")) paramMap.put("courseId", courseId);
 		if(homeworkId!=null&&!homeworkId.equals("")) paramMap.put("homeworkId", homeworkId);
+		if(className!=null&&!className.equals("")) paramMap.put("className", className);
 		
 		List<Map> homeworkList = homeworkSevice.listStudentHomework(paramMap);
-		return JsonResult.createBySuccessData(homeworkList);
+		json.put("data", homeworkList);
+		json.put("msg", "success");
+		json.put("code", 0);
+		json.put("count", homeworkSevice.listStudentHomeworkCount(paramMap));
+		return json;
 	}
 
 	@ResponseBody
@@ -241,12 +272,48 @@ public class HomeworkController {
 		//int ret = 1;//homeworkSevice.insertStudentHomeworkScore(paramMap);
 		
 		return ret == 1?JsonResult.createBySuccess():JsonResult.createByError();
-		
-		
-		
-		
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/listHomeworkScoreInfo")
+	public JSONObject listHomeworkScoreInfo(HttpSession session, int page,int limit,
+			@RequestParam(required=false,value="termValue") String termValue ,
+			@RequestParam(required=false,value="userName") String userName,
+			@RequestParam(required=false,value="homeworkName") String homeworkName,
+			@RequestParam(required=false,value="courseName") String courseName,
+			@RequestParam(required=false,value="className") String className,
+			@RequestParam(required=false,value="userCode") String userCode,
+			@RequestParam(required=false,value="instituteId") String instituteId) {
+		
+		String userId = (String) session.getAttribute("userId");
+		String userType = (String) session.getAttribute("userType");
+		Map paramMap= new HashMap<>();
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
+		paramMap.put("limit", limit);
+		paramMap.put("userId", userId);
+		paramMap.put("userType", userType);
+		if(termValue!=null&&!termValue.equals("")) paramMap.put("termValue", termValue);
+		if(userName!=null&&!userName.equals("")) paramMap.put("userName", userName);
+		if(courseName!=null&&!courseName.equals("")) paramMap.put("courseName", courseName);
+		if(homeworkName!=null&&!homeworkName.equals("")) paramMap.put("homeworkName", homeworkName);
+		if(className!=null&&!className.equals("")) paramMap.put("className", className);
+		if(userCode!=null&&!userCode.equals("")) paramMap.put("userCode", userCode);
+		if(instituteId!=null&&!instituteId.equals("")) paramMap.put("instituteId", instituteId);
+		
+		List<Map> homeworkList = homeworkSevice.listHomeworkScoreInfo(paramMap);
+		int count = homeworkSevice.listHomeworkScoreCount(paramMap);
+		json.put("data", homeworkList);
+		json.put("msg", "success");
+		json.put("code", 0);
+		json.put("count", count);
+		return json;
+	}
 	
 	
 	

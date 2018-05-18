@@ -18,13 +18,19 @@ display: none;
 .my-tab ul.layui-tab-title li:nth-child(1) i {
 	display: none;
 } /*第一个不可删除*/
+.myFontSize a {
+	font-size:17px;
+}
+.myFontSize1 a {
+	font-size:16px;
+}
 </style>
 
 </head>
 <body class="layui-layout-body" style="overflow-y: hidden;">
 	<div class="layui-layout layui-layout-admin">
 		<div class="layui-header">
-			<div class="layui-logo">作业管理系统</div>
+			<div class="layui-logo layui-icon" style="font-size:22px">&#xe68e;&nbsp;作业管理系统</div>
 			<!-- 头部区域（可配合layui已有的水平导航） -->
 			<!-- <ul class="layui-nav layui-layout-left" lay-filter="test1">
 				<li class="layui-nav-item"><a href="javascript:;"
@@ -44,104 +50,89 @@ display: none;
 						</dd>
 					</dl></li>
 			</ul> -->
-			<ul class="layui-nav layui-layout-right" lay-filter="leftNav">
+			<ul class="layui-nav layui-layout-right layui-icon myFontSize1"  lay-filter="leftNav">
 				<li class="layui-nav-item"><a href="javascript:;"> 欢迎你,
 						${userName} <c:choose>
 							<c:when test="${userType eq 1||userType eq 0}">老师</c:when>
 							<c:otherwise>同学</c:otherwise>
 						</c:choose>
 				</a>
-
 					<dl class="layui-nav-child">
-
 						<dd>
-							<a href="javascript:;" href-url="userInfoForm">基本资料</a>
+							<a href="javascript:;" href-url="userInfoForm">基本资料</a> <!-- &#xe606;&nbsp; -->
 						</dd>
 						<dd>
-							<a href="javascript:;" href-url="editUserPasswordForm">安全设置</a>
+							<a href="javascript:;" href-url="editUserPasswordForm">安全设置</a> <!-- &#xe614;&nbsp; -->
 						</dd>
 					</dl></li>
 				<li class="layui-nav-item"><a href="logout">退出</a></li>
 			</ul>
 		</div>
 
-		<div class="layui-side layui-bg-black">
-			<div class="layui-side-scroll">
+		<div class="layui-side layui-bg-black ">
+			<div class="layui-side-scroll ">
 				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-				<ul class="layui-nav layui-nav-tree" lay-filter="leftNav">
-					<li class="layui-nav-item "><a class="" href="javascript:;">课程管理</a>
+				<ul class="layui-nav layui-nav-tree myFontSize layui-icon" lay-filter="leftNav">
+					<li class="layui-nav-item "><a class=" myFontSize" href="javascript:;">&#xe857;&nbsp;课程管理</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a href="javascript:;" href-url="listCourseInfoForm">课程详情</a>
+								<a href="javascript:;" href-url="listCourseInfoForm">&nbsp;&nbsp;&nbsp;课程详情</a>
 							</dd>
-							<dd>
-								<a href="javascript:;" id="3">列表三</a>
-							</dd>
+							
 						</dl></li>
 
-					<li class="layui-nav-item"><a href="javascript:;">
-							<!-- 
-					<i class="layui-icon" style="font-size: 25px; color: #FFB800;">&#xe60a;</i> &nbsp; -->作业管理
+					<li class="layui-nav-item "><a href="javascript:;">&#xe705;&nbsp;作业管理
 					</a>
 						<dl class="layui-nav-child">
 							<dd>
-								<a href="javascript:;" href-url="listHomeworkForm">作业详情</a>
+								<a  href="javascript:;" href-url="listHomeworkForm">&nbsp;&nbsp;&nbsp;作业详情</a>
 							</dd>
-							<c:if test="${userType eq 1||userType eq 0}">
+							<c:if test="${userType eq 0}">
 							<dd>
-								<a href="javascript:;" href-url="upload">上传文件</a>
+								<a href="javascript:;" href-url="upload">&nbsp;&nbsp;&nbsp;上传文件</a>
 							</dd>
 							<dd>
-								<a href="javascript:;" href-url="attachFiles">文件列表</a>
+								<a href="javascript:;" href-url="attachFiles">&nbsp;&nbsp;&nbsp;文件列表</a>
 							</dd>
 							</c:if>
 							<dd>
-								<a href="javascript:;" href-url="homeworkGradeForm">作业批改情况</a>
+								<a href="javascript:;" href-url="listHomeworkScoreForm">&nbsp;&nbsp;&nbsp;作业批改情况</a>
 							</dd>
 						</dl></li>
 					<c:if test="${userType eq 1||userType eq 0}">
-						<li class="layui-nav-item"><a href="javascript:;">学生管理</a>
+						<li class="layui-nav-item"><a href="javascript:;">&#xe63c;&nbsp;学生管理</a>
 							<dl class="layui-nav-child">
 								<dd>
-									<a href="javascript:;" href-url="listStudentInfoForm">学生详情</a>
+									<a href="javascript:;" href-url="listStudentInfoForm">&nbsp;&nbsp;&nbsp;学生详情</a>
 								</dd>
 
 								<dd>
-									<a href="javascript:;" href-url="uploadStudentInfoForm">上传学生信息
+									<a href="javascript:;" href-url="uploadStudentInfoForm">&nbsp;&nbsp;&nbsp;上传学生信息
 									</a>
 								</dd>
 
-								<dd>
-									<a href="javascript:;">列表二</a>
-								</dd>
 							</dl></li>
 					</c:if>
 					<c:if test="${userType eq 0}">
-						<li class="layui-nav-item"><a href="javascript:;">人员管理</a>
+						<li class="layui-nav-item"><a href="javascript:;">&#xe612;&nbsp;人员管理</a>
 							<dl class="layui-nav-child">
 								<dd>
-									<a href="javascript:;" href-url="listUserForm">人员详情</a>
+									<a href="javascript:;" href-url="listUserForm">&nbsp;&nbsp;&nbsp;人员详情</a>
 								</dd>
 
-								<dd>
-									<a href="javascript:;">列表二</a>
-								</dd>
-								<dd>
-									<a href="">超链接</a>
-								</dd>
 
 							</dl></li>
 					</c:if>
 					<c:if test="${userType eq 1||userType eq 0}">
-						<li class="layui-nav-item"><a href="javascript:;">班级管理</a>
+						<li class="layui-nav-item"><a href="javascript:;">&#xe629;&nbsp;班级管理</a>
 							<dl class="layui-nav-child">
 								<dd>
-									<a href="javascript:;" href-url="listClassForm">班级详情</a>
+									<a href="javascript:;" href-url="listClassForm">&nbsp;&nbsp;&nbsp;班级详情</a>
 								</dd>
 
-								<dd>
+								<!-- <dd>
 									<a href="javascript:;" href-url="classCourseForm">班级课程详情</a>
-								</dd>
+								</dd> -->
 
 							</dl></li>
 					</c:if>
@@ -150,7 +141,7 @@ display: none;
 			</div>
 		</div>
 
-		<div class="layui-body">
+		<div class="layui-body" style="bottom: 1px;overflow: auto;">
 			<!-- 内容主体区域 -->
 			<!-- <fieldset class="layui-elem-field layui-field-title"
 				style="margin-top: 50px;">
@@ -175,27 +166,99 @@ display: none;
 				<span class="layui-nav-bar" style="left: 0px; top: 35px; width: 0px; opacity: 0;"></span>
 				</ul> -->
 				<div class="layui-tab-content">
-					<div class="layui-tab-item layui-show">后台首页</div>
+					<div class="layui-tab-item layui-show">
+						<div style=" ">
+							<div style=" float:left;width:50%">
+							<ul class="layui-timeline">
+							  <li class="layui-timeline-item">
+							    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							    <div class="layui-timeline-content layui-text">
+							      <h3 class="layui-timeline-title">课程管理</h3>
+							     	<ul>
+							         	<li>按条件搜索查看课程详情，新增课程。</li>
+								       	<li>课程列表中可以查看课程作业，分配课程班级</li>
+								       	<li>查看课程作业可以添加作业，下载或者删除已经存在的作业 </li>
+							     	</ul>
+							    </div>
+							  </li>
+							  <li class="layui-timeline-item">
+							    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							    <div class="layui-timeline-content layui-text">
+							      <h3 class="layui-timeline-title">作业管理</h3>
+							      	<ul>
+							        	<li>按条件搜索查看作业详情，新增作业</li>
+							        	<li>作业列表也可下载选中的作业文件，查看学生作业上交情况</li>
+							        	<li>按条件查看学生作业情况列表，下载学生提交的作业</li>
+							        	<li>按条件查看作业批改情况</li>
+							      	</ul>
+							    </div>
+							  </li>
+							  <li class="layui-timeline-item">
+							    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							    <div class="layui-timeline-content layui-text">
+							      <h3 class="layui-timeline-title">学生管理</h3>
+							      	<ul>
+							        	<li>按条件搜索查看学生信息详情</li>
+							        	<li>上传学生信息文件，学生信息通过Excel文件上传并添加到数据库中</li>
+							      	</ul>
+							      	
+							    </div>
+							  </li>
+							  <li class="layui-timeline-item">
+							    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							    <div class="layui-timeline-content layui-text">
+							      <h3 class="layui-timeline-title">人员管理</h3>
+							      	<ul>
+							        	<li>按条件搜索查看当前角色权限可以看到所有人员详情</li>
+							      	</ul>
+							    </div>
+							    <li class="layui-timeline-item">
+							    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							    <div class="layui-timeline-content layui-text">
+							      <h3 class="layui-timeline-title">班级管理</h3>
+							      	<ul>
+							        	<li>按条件搜索查看的班级信息详情</li>
+							      	</ul>
+							    </div>
+							  </li>
+							  </li>
+							</ul>
+							</div>
+						
+							<div style="float:left;margin-left:20px; ">
+								<span id="testView"></span>
+								<div id="calendar"></div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
 		</div>
 
-		 <div class="layui-footer" >
-			底部固定区域
-			© layui.com - 底部固定区域
-		</div> 
+		 <!-- <div class="layui-footer" >
+			
+		</div>  -->
 	</div>
 
 
 </body>
 
 <script>
-	layui.use([ 'form', 'layer', 'element' ], function() {
+	layui.use([ 'form', 'layer', 'element','laydate' ], function() {
 		debugger
 		var element = layui.element;
 		var form = layui.form;
 		var layer = layui.layer;
+		var laydate = layui.laydate;
+		
+		laydate.render({
+			  elem: '#calendar'
+			  ,position: 'static'
+			  ,change: function(value, date){ //监听日期被切换
+			    lay('#testView').html(value);
+			  }
+			});
 
 		//一些事件监听
 		element.on('nav(leftNav)', function(elem) {
@@ -209,14 +272,15 @@ display: none;
 		});
 		
 		function tabAdd(title,src){
-			debugger
+			
 			var card = 'demo'; // 选项卡对象
 			var id = new Date().getTime(); // ID
 			var flag = getTitleId(card, title); // 是否有该选项卡存在
 			var currBoxHeight = $('.layui-body').height(); //获取当前容器的高度
 			var tabHeight = $('.layui-tab-title').height(); //获取高度
-			var iframeHeight = currBoxHeight - tabHeight
-			console.log(currBoxHeight)
+			var iframeHeight = currBoxHeight - tabHeight - 5
+			iframeHeight = 580
+			debugger
 			// 大于0就是有该选项卡了
 			if (flag > 0) {
 				id = flag;

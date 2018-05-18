@@ -20,6 +20,7 @@ import com.andy.common.JsonResult;
 import com.andy.model.Course;
 import com.andy.service.CourseService;
 import com.andy.utils.JsonResultUtil;
+import com.andy.utils.PageUtil;
 
 @Controller
 public class CourseController {
@@ -83,10 +84,10 @@ public class CourseController {
 		
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/listCourseByUserType")
-	public JSONObject listCourseByPage(Model model,@RequestBody(required=false) Map<String,Object>  paramMap,
-			int page,int limit,HttpSession session,@RequestBody(required=false) String courseName) {
+/*	@ResponseBody
+	@RequestMapping(value = "/listCourse")
+	public JSONObject listCourse(Model model,@RequestBody(required=false) Map<String,Object>  paramMap,
+			int page,int limit,HttpSession session) {
 		if(paramMap==null) {
 			paramMap = new HashMap<>();
 		}
@@ -95,13 +96,44 @@ public class CourseController {
 		paramMap.put("limit", limit);
 		paramMap.put("userType", session.getAttribute("userType"));
 		paramMap.put("userId", session.getAttribute("userId"));
-		if(courseName!=null) paramMap.put("courseName", courseName);
 		
 		System.out.println(paramMap.toString());
-		List<Map> lm = courseService.listCourse(paramMap);
+		List<Map> lm = courseService.listCourseByUserType(paramMap);
 		int count = courseService.selectNum(paramMap);
 		System.out.println(lm.toString());
 		JSONObject json = new JSONObject();
+		json.put("data", lm);
+		json.put("msg", "success");
+		json.put("code", 0);
+		json.put("count", count);
+		return json;
+	}
+*/	
+	@ResponseBody
+	@RequestMapping(value = "/listCourseByUserType")
+	public JSONObject listCourseByPage(Model model,
+			int page,int limit,HttpSession session,
+			@RequestParam(required=false,value="className") String className ,
+			@RequestParam(required=false,value="instituteId") String instituteId,
+			@RequestParam(required=false,value="courseName") String courseName) {
+		Map paramMap = new HashMap<>();
+		JSONObject json = new JSONObject();
+		int rowFrom = PageUtil.getRowFrom(page, limit);
+		if(rowFrom<0) {
+			json.put("code", 1);
+			return json;
+		}
+		paramMap.put("rowFrom", rowFrom);
+		paramMap.put("limit", limit);
+		paramMap.put("userType", session.getAttribute("userType"));
+		paramMap.put("userId", session.getAttribute("userId"));
+		if(courseName!=null&&!courseName.equals(""))  paramMap.put("courseName", courseName);
+		if(className!=null&&!className.equals(""))  paramMap.put("className", className);
+		if(instituteId!=null&&!instituteId.equals(""))  paramMap.put("instituteId", instituteId);
+		System.out.println(paramMap.toString());
+		List<Map> lm = courseService.listCourseByUserType(paramMap);
+		int count = courseService.selectNum(paramMap);
+		System.out.println(lm.toString());
 		json.put("data", lm);
 		json.put("msg", "success");
 		json.put("code", 0);
@@ -120,22 +152,36 @@ public class CourseController {
 		System.out.println("-------------------------------");
 		int ret = courseService.assignClassCourse(courseId, classId);
 		JSONObject json = new JSONObject();
-		json.put("data", ret);
-		json.put("msg", "success");
-		json.put("code", 0);
+		if(ret==1) {
+			json.put("data", ret);
+			json.put("msg", "success");
+			json.put("code", 0);
+		}else {
+			json.put("msg", "success");
+			json.put("code", 1);
+		}
 		return json;
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/listClassCourse")
-	public JsonResult listClassCourse(HttpSession session) {
+	public JSONObject listClassCourse(HttpSession session,
+			@RequestParam(required=false,value="className") String className ,
+			@RequestParam(required=false,value="instituteId") String instituteId,
+			@RequestParam(required=false,value="courseName") String courseName) {
 		String userId = (String) session.getAttribute("userId");
 		String userType = (String) session.getAttribute("userType");
 		Map paramMap = new HashMap<>();
 		paramMap.put("userId", userId);
 		paramMap.put("userType", userType);
-		List<Map> userInfoList = courseService.listClassCourse(paramMap);
-		return JsonResult.createBySuccessData(userInfoList);
+		List<Map> classCourseList = courseService.listClassCourse(paramMap);
+		int count = courseService.listClassCourseNum(paramMap);
+		JSONObject json = new JSONObject();
+		json.put("data", classCourseList);
+		json.put("msg", "success");
+		json.put("code", 0);
+		json.put("count", count);
+		return json;
 		
 	}
 	

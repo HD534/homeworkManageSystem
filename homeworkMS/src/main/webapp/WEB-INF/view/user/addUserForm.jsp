@@ -168,6 +168,7 @@
 
 				//console.log(JSON.stringify(paramMap))
 				//console.log("indexId = " + indexId);
+				
 
 				$.ajax({
 					data : JSON.stringify(paramMap),
@@ -179,7 +180,7 @@
 						if (data.code == 0) {
 							//layer.close(indexId)
 							//layer.closeAll();
-							parent.layer.close(indexId);
+							parent.layer.close($('#indexId').val());
 							console.log(data)
 							parent.layer.msg("添加成功")
 						} else if (data.code == 2) {

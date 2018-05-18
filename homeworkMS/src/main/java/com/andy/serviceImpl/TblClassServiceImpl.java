@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.andy.common.JsonResult;
 import com.andy.mapper.TblClassMapper;
 import com.andy.model.TblClass;
 import com.andy.service.TblClassService;
@@ -44,6 +45,12 @@ public class TblClassServiceImpl implements TblClassService{
 	public int listClassCountNum(Map map) {
 		// TODO Auto-generated method stub
 		return tblClassMapper.listClassCountNum(map);
+	}
+
+	@Override
+	public int addNewClass(Map paramMap) {
+		// TODO Auto-generated method stub
+		return tblClassMapper.addNewClass(paramMap);
 	}
 
 }
