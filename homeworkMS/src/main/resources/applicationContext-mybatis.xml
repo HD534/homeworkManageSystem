@@ -14,7 +14,7 @@
 
 	<context:annotation-config />
 
-	<context:component-scan base-package="com.andy"> <!-- use-default-filters="false" -->
+	<context:component-scan base-package="com.andy"> 
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
 		<context:include-filter type="annotation"
@@ -27,8 +27,7 @@
 
 
 	<!-- Mybatis 和 Spring的整合 -->
-	<!-- 1.数据源：DriverManagerDataSource -->
-	<!--Mysql -->
+	<!--Mysql数据源 -->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>

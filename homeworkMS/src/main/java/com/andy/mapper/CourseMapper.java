@@ -43,6 +43,6 @@ public interface CourseMapper {
 	
 	List<Map> listCourseByParamMap(Map paramMap);
 
-	int checkClassCourse(Map map);
+	Map checkClassCourse(Map map);
     
 }

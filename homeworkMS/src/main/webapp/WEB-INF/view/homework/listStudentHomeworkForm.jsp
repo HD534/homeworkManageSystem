@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
 <title>layui</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -82,7 +82,7 @@
 				<c:if test="${userType eq 0||userType eq 1}">
   					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 				</c:if>
-				<c:if test="${userType eq 2}">
+				<c:if test="${userType eq 0||userType eq 2}">
 					<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="uploadHomework">提交作业</a>
 				</c:if>
 			</script>
@@ -134,10 +134,10 @@
 					{
 						field : 'homeworkName',
 						title : '作业名称',
-						width : '12%'
+						width : '10%'
 					}, {
 						field : 'className',
-						width : '12%',
+						width : '10%',
 						title : '班级'
 					}, {
 						field : 'userCode',
@@ -145,7 +145,7 @@
 						title : '学号'
 					}, {
 						field : 'studentName',
-						width : '10%',
+						width : '9%',
 						title : '学生'
 					}, {
 						field : 'studentHomeworkName',
@@ -153,20 +153,26 @@
 						title : '学生作业'
 					}, {
 						field : 'uploadDate',
-						title : '上传日期',
-						width : '12%',
+						title : '提交日期',
+						width : '10%',
 					//minWidth : 100
 					} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
 					, {
 						field : 'score',
-						width : '8%',
+						width : '7%',
 						title : '分数',
+						//type : 'numbers',
+						edit:'text'
+					}, {
+						field : 'comment',
+						width : '12%',
+						title : '批注',
 						//type : 'numbers',
 						edit:'text'
 					},{
 						title : '操作',
 						fixed : 'right',
-						width : '20%',
+						width : '18%',
 						align : 'center',
 						toolbar : '#barDemo'
 					},{
@@ -217,49 +223,51 @@
 					var value = obj.value,
 					data = obj.data,
 					field = obj.field;
-					
+					debugger;
 					var paramMap = data;
-					
-					if(!isNaN(value)){
-						var reg=/^(([^0][\d]?)|0|100)$/;
-						if(reg.test(value)){
-							layer.msg('是数字 0-100')
-							
-							$.ajax({
-							data : JSON.stringify(paramMap),
-							url : 'insertStudentHomeworkScore',
-							contentType : "application/json",
-							type : 'POST',
-							dataType : 'json',
-							success : function(data) {
-								if (data.code == 0) {
-									//layer.close(indexId)
-									//layer.closeAll();
-									debugger;
-									//parent.layer.close(indexId);
-									//console.log(data)
-									layer.msg("修改成功")
-								}  else {
-									layer.msg("修改失败")
-								}
-
+					if(field=='score'){
+						if(!isNaN(value)){
+							var reg=/^(([^0][\d]?)|0|100)$/;
+							if(reg.test(value)){
+								//layer.msg('是数字 0-100')
+								
+							}else{
+								
+								layer.msg('数值范围 0-100， 请重新填写！')	
+								return;
+								setTimeout("studentHomeworkTableReload()", 400);
+								
 							}
-
-						});  
-							
+	
 						}else{
-							
-							layer.msg('数值范围 0-100， 请重新填写！')	
-							setTimeout("studentHomeworkTableReload()", 400);
-							
+								layer.msg('不是数字，请重新填写！');	
+								return;
+								setTimeout("studentHomeworkTableReload()", 400);
 						}
-
-					}else{
-							layer.msg('不是数字，请重新填写！');	
-							setTimeout("studentHomeworkTableReload()", 400);
+					
 					}
 					
-					
+					$.ajax({
+						data : JSON.stringify(paramMap),
+						url : 'insertStudentHomeworkScore',
+						contentType : "application/json",
+						type : 'POST',
+						dataType : 'json',
+						success : function(data) {
+							if (data.code == 0) {
+								//layer.close(indexId)
+								//layer.closeAll();
+								debugger;
+								//parent.layer.close(indexId);
+								//console.log(data)
+								layer.msg("修改成功")
+							}  else {
+								layer.msg("修改失败")
+							}
+
+						}
+
+					}); 
 					
 					
 					var paramMap = data;
@@ -273,7 +281,7 @@
 				table.on('tool(studentHomeworkTable)', function(obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
 					var data = obj.data //获得当前行数据
 					, layEvent = obj.event; //获得 lay-event 对应的值
-					console.log(data)
+					
 					if (layEvent === 'download') {
 						debugger
 						window.open("util/download?fileId=" + data.fileid)
@@ -285,6 +293,7 @@
 							//向服务端发送删除指令
 						});
 					} else if (layEvent === 'uploadHomework') {
+						debugger;
 						layer
 								.open({
 									type : 2,
@@ -374,6 +383,7 @@
 							
 							var courseName = $('#courseName').val();
 							var destFileName = courseName+'-'+classSelect+(classSelect==''?'':'-')+'作业情况.zip'
+							debugger;
 							console.log(fileIds);
 							var form=$("<form>");//定义一个form表单  
 							form.attr("style","display:none");  
@@ -390,7 +400,7 @@
 							$("body").append(form);//将表单放置在web中  
 							form.append(input1);  
 							form.append(input2);  
-							//form.submit();//表单提交 
+							form.submit();//表单提交 
 							/*  $.ajax({
 								data : {'fileIds':fileIds}, 
 								url : 'attachFiles/downloadZip',

@@ -113,8 +113,8 @@
 
 	</select>
 	
-	<select id="checkClassCourse" parameterType="Map" resultType="int">
-		select 1 from course c	
+	<select id="checkClassCourse" parameterType="Map" resultType="Map">
+		select c.courseId from course c	
 		left join courseclass cc on cc.courseId = c.courseId
 		where cc.classId =#{classId,jdbcType=VARCHAR} 
 		and cc.courseId=#{courseId,jdbcType=VARCHAR}

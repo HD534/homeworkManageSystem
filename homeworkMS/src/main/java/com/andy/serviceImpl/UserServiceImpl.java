@@ -168,7 +168,6 @@ public class UserServiceImpl implements UserService {
 
 			return JsonResult.createBySuccess();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return JsonResult.createByError();
 		}

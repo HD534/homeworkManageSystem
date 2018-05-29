@@ -5,12 +5,25 @@
 
 	<display-name>HomeworkMS</display-name>
 
-	<!-- <servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.html</url-pattern>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>  -->
-	
+	<!-- <servlet-mapping> <servlet-name>default</servlet-name> <url-pattern>*.html</url-pattern> 
+		<url-pattern>*.js</url-pattern> </servlet-mapping> -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
@@ -26,10 +39,6 @@
 		<load-on-startup>1</load-on-startup><!--是启动顺序，让这个Servlet随Servletp容器一起启动。 -->
 	</servlet>
 
-	<!-- <servlet-mapping>
-		<servlet-name>DispatcherServlet</servlet-name>
-		<url-pattern>/login</url-pattern>
-	</servlet-mapping>  --> 
 	<servlet-mapping>
 		<servlet-name>DispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>

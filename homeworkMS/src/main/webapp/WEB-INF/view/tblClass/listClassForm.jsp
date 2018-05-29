@@ -43,10 +43,10 @@
 		</form>
 
 		<table class="layui-hide " id="classTable" lay-filter="classTable">
-			<!--<script type="text/html" id="barDemo">
-  				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="download">下载</a>
+			<script type="text/html" id="barDemo">
+  				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
   				<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-			 </script> -->
+			 </script> 
 		</table>
 
 	</div>
@@ -85,13 +85,13 @@
 					width : '20%',
 					title : '班级创建年月'
 				}
-				/* , {
+				 , {
 					title : '操作',
 					fixed : 'right',
 					width : '20%',
 					align : 'center',
 					toolbar : '#barDemo'
-				}  */
+				} 
 				] ]
 			});
 
@@ -102,19 +102,37 @@
 				var data = obj.data //获得当前行数据
 				, layEvent = obj.event; //获得 lay-event 对应的值
 				console.log(data)
-				if (layEvent === 'download') {
-					debugger
-					/* window.open("util/download?fileId="
-							+ data.fileId) */
-					layer.msg('查看操作');
-				} else if (layEvent === 'del') {
-					layer.confirm('真的删除行么', function(index) {
+				 if (layEvent === 'del') {
+					layer.confirm('确认删除班级 : '+data.className+' 吗？', function(index) {
 						obj.del(); //删除对应行（tr）的DOM结构
 						layer.close(index);
 						//向服务端发送删除指令
 					});
 				} else if (layEvent === 'edit') {
-					layer.msg('编辑操作');
+					layer.open({
+						type : 2,
+						area : ['500px',
+								'400px' ],
+						content : 'editClassForm',
+						success : function(
+								layero,
+								index) {
+							var body = layer.getChildFrame('body',index);
+							var iframeWin = window[layero
+									.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+							//iframeWin.window.setDefaultData(data);
+							//console.log(body.html()) //得到iframe页的body内容
+							//body.find('input').val('Hi，我是从父页来的')
+							body.find('#indexId').val(index);
+							body.find("#instituteName").val(data.instituteName);
+							body.find("#className").val(data.className);
+							body.find('#classid').val(data.classid);
+							var iframeWindow = layero.find('iframe')[0].contentWindow;
+							//重新渲染checkbox
+							iframeWindow.layui.form.render();
+							debugger
+						}
+					});
 				}
 			});
 			

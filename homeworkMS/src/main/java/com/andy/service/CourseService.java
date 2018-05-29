@@ -15,7 +15,7 @@ public interface CourseService {
 
 	int assignClassCourse(String courseId, String classId);
 	
-	int checkClassCourse(Map map);
+	Map checkClassCourse(Map map);
 	
 	List<Map> listClassCourse(Map map);
 

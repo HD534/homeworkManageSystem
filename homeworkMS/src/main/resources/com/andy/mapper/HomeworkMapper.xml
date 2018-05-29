@@ -322,7 +322,8 @@
 		file.fileRealName as studentHomeworkName,
 		file.fileid,
 		file.createTime as uploadDate,
-		shs.score
+		shs.score,
+		shs.comment
 		 from studenthomeworkfile shf 
 		LEFT JOIN `user` u on u.userId = shf.studentId
 		LEFT JOIN student stu on stu.userId = u.userId
@@ -338,7 +339,7 @@
 		LEFT JOIN teacher t on t.teacherId = tc.teacherId
 		LEFT JOIN `user` ut on ut.userId = t.userId
 		left join studenthomeworkscore shs on shs.homeworkId = h.homeworkId
-		WHERE 1=1
+		WHERE shs.studentId = stu.studentId
 		
 		<if test="userType == 1">
 			and ut.userId =#{userId,jdbcType=VARCHAR}
@@ -405,7 +406,8 @@
         LEFT JOIN teachercourse tc on tc.courseId = c.courseId
 		LEFT JOIN teacher t on t.teacherId = tc.teacherId
 		LEFT JOIN `user` ut on ut.userId = t.userId
-		WHERE 1=1
+		left join studenthomeworkscore shs on shs.homeworkId = h.homeworkId
+		WHERE shs.studentId = stu.studentId
 		
 		<if test="userType == 1">
 			and ut.userId =#{userId,jdbcType=VARCHAR}

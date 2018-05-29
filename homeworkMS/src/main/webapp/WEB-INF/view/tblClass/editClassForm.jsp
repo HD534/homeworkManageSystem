@@ -20,7 +20,7 @@
 	/*overflow: hidden;*/
 }
 
-.userInfo .myForm, .layui-form-select {
+ .myForm, .layui-form-select {
 	width: 80%
 }
 </style>
@@ -32,39 +32,13 @@
 		<div class="layui-col-md12 ">
 			<div class="layui-row ">
 				<div class="layui-col-md10 layui-col-md-offset1">
-					<form class="layui-form " action="editUser" id="userInfoForm"
+					<form class="layui-form " action="editClass" id="userInfoForm"
 						style="margin-top: 20px; padding: 5px">
 						<div class="layui-row layui-bg-gray" id="mainPanle">
 
-							<blockquote class="layui-elem-quote">修改人员信息</blockquote>
+							<blockquote class="layui-elem-quote">修改班级信息</blockquote>
 
-							<div class="userInfo" id="item1">
-								<div class="layui-form-item">
-									<label class="layui-form-label">账户类型</label>
-									<div class="layui-input-block">
-										<input type="text" name="userTypeName" autocomplete="off"
-											required id="userTypeName" lay-verify="required" disabled=""
-											class="layui-input myForm">
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">姓名</label>
-									<div class="layui-input-block">
-										<input type="text" name="userName" autocomplete="off" required
-											id="userName" lay-verify="required" placeholder="请输入姓名"
-											disabled="" class="layui-input myForm">
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">学号</label>
-									<div class="layui-input-block">
-										<input type="text" name="userCode" autocomplete="off" required
-											id="userCode" placeholder="请输入学号" lay-verify="required"
-											disabled="" autocomplete="off" class="layui-input myForm">
-
-										<!-- autocomplete="new-password" -->
-									</div>
-								</div>
+							<div class="classInfo" id="item1">
 								<div class="layui-form-item">
 									<label class="layui-form-label">学院</label>
 									<div class="layui-input-block">
@@ -74,28 +48,11 @@
 									</div>
 								</div>
 								<div class="layui-form-item">
-									<label class="layui-form-label">性别</label>
+									<label class="layui-form-label">班级名称</label>
 									<div class="layui-input-block">
-										<input type="radio" id="sex1" name="sex" value="男" title="男">
-										<input type="radio" id="sex2" name="sex" value="女" title="女">
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">年龄</label>
-									<div class="layui-input-block">
-										<input type="text" name="age" placeholder="请输入年龄"
-											lay-verify="number" autocomplete="off" id="age"
+										<input type="text" name="className" id="className" autocomplete="off" required
+											lay-verify="required" placeholder="请输入班级名称"
 											class="layui-input myForm">
-									</div>
-								</div>
-
-								<div class="layui-form-item">
-									<label class="layui-form-label">邮箱</label>
-									<div class="layui-input-block">
-										<input type="text" name="email" placeholder="请输入邮箱"
-											lay-verify="email" autocomplete="off" id="email"
-											class="layui-input myForm">
-
 									</div>
 								</div>
 							</div>
@@ -108,7 +65,7 @@
 							</div>
 
 							<input type="text" id="indexId" class="layui-input layui-hide">
-							<input type="text" id="userId" class="layui-input layui-hide">
+							<input type="text" id="classid" class="layui-input layui-hide">
 
 						</div>
 					</form>
@@ -130,12 +87,12 @@
 				debugger
 				//var user = data.field
 				var paramMap = data.field
-				paramMap.userId = $("#userId").val()
+				paramMap.classid = $("#classid").val()
 
 				//console.log(JSON.stringify(paramMap))
 				//console.log("indexId = " + indexId);
 
-				$.ajax({
+				/* $.ajax({
 					data : JSON.stringify(paramMap),
 					url : data.form.action,
 					contentType : "application/json",
@@ -156,7 +113,8 @@
 
 					}
 
-				});
+				}); */
+				layer.msg("修改成功")
 				return false;
 			});
 

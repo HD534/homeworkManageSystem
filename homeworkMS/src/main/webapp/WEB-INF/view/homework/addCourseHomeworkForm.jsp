@@ -33,7 +33,7 @@
 			<div class="layui-row ">
 				<div class="layui-col-md10 layui-col-md-offset1">
 					<form class="layui-form " action="addHomework" id="courseHomeworkInfoForm"
-						style=" padding: 5px" enctype="multipart/form-data">
+						style=" padding: 5px" enctype="multipart/form-data" mothod="post">
 						<div class="layui-row layui-bg-gray" id="mainPanle">
 
 							<blockquote class="layui-elem-quote">添加作业</blockquote>
@@ -103,16 +103,17 @@
 									</div>
 								</div>
 								<div class="layui-form-item" >
-									<label class="layui-form-label">上交日期</label>
+									<label class="layui-form-label">截至日期</label>
 									<div class="layui-input-block">
 										<input type="text" class="layui-input myForm" id="homeworkDueDate" name="homeworkDueDate"
-										 placeholder="yyyy-MM-dd" >
+										 placeholder="请选择截至日期"  required >
 									</div>
 								</div>
-								<div class="layui-form-item demoTable" style="padding: 5px">
+								<div class="layui-form-item " style="padding: 5px">
 									<div class="layui-input-block">
-										<button class="layui-btn" id="submit" lay-submit="" lay-filter="formDemo">立即提交</button>
-										<button type="button" class="layui-btn layui-btn-primary" data-type="cancle" lay-filter="cancle">取消</button>
+										<button class="layui-btn" id="submit" lay-submit lay-filter="formDemo">立即提交</button>
+						<!-- 				<button class="layui-btn" type="button" id="submit"  lay-filter="formDemo" data-type="submit">立即提交</button> -->
+										<button type="button" class="layui-btn layui-btn-primary demoTable" data-type="cancle" lay-filter="cancle">取消</button>
 									</div>
 								</div>
 
@@ -145,8 +146,9 @@
 			    //,multiple: true
 			    ,bindAction: '#submit'
 			    ,done: function(res){
-			      console.log(res)
+			      //console.log(res)
 			    }
+				
 			 });
 			form.render();
 			form.on('submit(formDemo)', function(data) {
@@ -158,16 +160,15 @@
 				var formData = new FormData($("#courseHomeworkInfoForm")[0])
 				var indexId = $("#indexId").val();
 				var courseId = $("#courseId").val();
-				//console.log(JSON.stringify(paramMap))
-				//console.log("indexId = " + indexId);
+				
 				var loadingIndex;
-				layer.open({
+				/* layer.open({
 				  type:3,shade: 0.3,content:'加载中',
 					success : function(layero,
 							index) {
 						loadingIndex = index;
 					}
-				});  
+				});   */
 				
 				$.ajax({
 					data : formData,
@@ -175,29 +176,29 @@
 					type : 'POST',
 					dataType: 'json',
 					cache: false,
-					async: true,
+					async: false,
 					contentType: false,
 					processData: false,
 					success : function(data) {
 						if (data.code == 0) {
 							//layer.close(indexId)
 							//layer.closeAll();
-							layer.close(loadingIndex);
+							//layer.close(loadingIndex);
 							debugger;
 							parent.layer.close(indexId);
 							console.log(data)
 							parent.layer.msg("添加成功")
 						} else if (data.code == 2) {
-							layer.close(loadingIndex);
+							//layer.close(loadingIndex);
 							layer.msg("已存在")
 						} else {
-							layer.close(loadingIndex);
+							//layer.close(loadingIndex);
 							layer.msg("添加失败")
 						}
 
 					}
 
-				}); 
+				});  
 				return false;
 			});
 			
@@ -209,6 +210,41 @@
 						var indexId = $("#indexId").val();
 
 						parent.layer.close(indexId);
+					},
+					submit :function(){
+						var formData = new FormData($("#courseHomeworkInfoForm")[0])
+						var indexId = $("#indexId").val();
+						var courseId = $("#courseId").val();
+						debugger;
+						/* $.ajax({
+							data : formData,
+							url : data.form.action,
+							type : 'POST',
+							dataType: 'json',
+							cache: false,
+							//async: true,
+							contentType: false,
+							processData: false,
+							success : function(data) {
+								if (data.code == 0) {
+									//layer.close(indexId)
+									//layer.closeAll();
+									//layer.close(loadingIndex);
+									debugger;
+									parent.layer.close(indexId);
+									console.log(data)
+									parent.layer.msg("添加成功")
+								} else if (data.code == 2) {
+									//layer.close(loadingIndex);
+									layer.msg("已存在")
+								} else {
+									//layer.close(loadingIndex);
+									layer.msg("添加失败")
+								}
+
+							}
+
+						});  */
 					}
 			};
 			

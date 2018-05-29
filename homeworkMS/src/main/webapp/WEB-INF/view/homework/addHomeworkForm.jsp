@@ -94,15 +94,15 @@
 											<!-- autocomplete="new-password" -->
 									</div>
 								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">作业文件</label>
+								<label class=" layui-input-block">作业文件 <span style="color: red">(文件类型限制：PDF,doc,压缩文件)</span></label>
+								<div class="layui-form-item" style="margin-top:5px">
 									<div class="layui-input-block">
 										<button type="button" class="layui-btn layui-btn-normal" 
 										id="homeworkFileInput"  class="myForm"><i class="layui-icon">&#xe67c;</i>选择文件</button>
 									</div>
 								</div>
 								<div class="layui-form-item" >
-									<label class="layui-form-label">作业上交日期</label>
+									<label class="layui-form-label">作业截至日期</label>
 									<div class="layui-input-block">
 										<input type="text" class="layui-input myForm" id="homeworkDueDate" name="homeworkDueDate"
 										 placeholder="请选择作业上交日期" >
@@ -140,6 +140,8 @@
 			    elem: '#homeworkFileInput'
 			    ,auto: false
 			    ,accept: 'file' //普通文件
+			    ,exts: 'zip|rar|7z|pdf|doc|docx|gz'  //可接受文件类型
+			    ,size:1024*20
 			    //,multiple: true
 			    ,bindAction: '#submit'
 			    ,done: function(res){

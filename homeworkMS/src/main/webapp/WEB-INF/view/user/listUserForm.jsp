@@ -140,7 +140,8 @@
 												if (layEvent === 'del') {
 													layer
 															.confirm(
-																	'真的删除行么',
+																	'确定删除人员吗？'+
+																	'学号/工号：'+data.userCode+' , 姓名：'+data.userName,
 																	function(
 																			index) {
 																		obj

@@ -146,13 +146,15 @@ public class CourseServiceImpl implements CourseService {
 		System.out.println("插入的courseTerm信息：" + courseTerm);
 		return courseMapper.insertCourseTerm(courseTerm);
 	}
-
+	
+	
+	//返回0则说明已存在课程
 	@Override
 	public int assignClassCourse(String courseId, String classId) {
 		Map map = new HashMap<>();
 		map.put("courseId", courseId);
 		map.put("classId", classId);
-		if (checkClassCourse(map) == 1) {
+		if (checkClassCourse(map) != null) {
 			return 0;
 		}else {
 			Map<String, Object> courseClass = new HashMap<>();
@@ -190,7 +192,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public int checkClassCourse(Map map) {
+	public Map checkClassCourse(Map map) {
 		// TODO Auto-generated method stub
 		return courseMapper.checkClassCourse(map);
 	}

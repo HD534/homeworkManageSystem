@@ -38,6 +38,10 @@ public class TblClassController {
 	public String addClassForm(Model model) {
 		return "tblClass/addClassForm";
 	}
+	@RequestMapping(value = "/editClassForm")
+	public String editClassForm(Model model) {
+		return "tblClass/editClassForm";
+	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/listClassByInstitute")

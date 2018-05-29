@@ -112,7 +112,7 @@
 						debugger
 						if (data == 0) {
 							layer.msg("登陆成功");
-							window.location.href = "testLayui"
+							window.location.href = "DashBoard"
 						} else if (data == -1) {
 							layer.msg("密码不正确，请重新输入");
 							return false;

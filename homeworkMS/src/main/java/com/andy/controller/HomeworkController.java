@@ -258,8 +258,10 @@ public class HomeworkController {
 		
 		String studentId = (String) paramMap.get("studentId");
 		String homeworkId = (String) paramMap.get("homeworkId");
+		System.out.println(paramMap.get("score").equals(Integer.class));
 		
-		int score = Integer.parseInt((String)paramMap.get("score"));
+		String sc = paramMap.get("score").toString();
+		int score = Integer.parseInt(sc);
 		
 		//参数错误
 		if(studentId==null||homeworkId==null) return  JsonResult.createByError();

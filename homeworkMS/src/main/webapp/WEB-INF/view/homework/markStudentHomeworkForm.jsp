@@ -103,7 +103,7 @@
 									</div>
 								</div>
 								<div class="layui-form-item" >
-									<label class="layui-form-label">上交日期</label>
+									<label class="layui-form-label">截至日期</label>
 									<div class="layui-input-block">
 										<input type="text" class="layui-input myForm" id="homeworkDueDate" name="homeworkDueDate"
 										 placeholder="yyyy-MM-dd" >

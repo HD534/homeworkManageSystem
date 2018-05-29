@@ -117,7 +117,7 @@ public class HomeworkServiceImpl implements HomeworkService {
 	public int insertStudentHomeworkScore(Map map) {
 		// TODO Auto-generated method stub
 		//先查数据库是否有数据，有的话update，没有就insert
-		if(checkStudentHomeworkScore(map).size()==0) {
+		if(checkStudentHomeworkScore(map)==null) {
 			//插入数据
 			String studentHomeworkScoreId = UUIDUtils.getUUID();
 			map.put("studentHomeworkScoreId", studentHomeworkScoreId);

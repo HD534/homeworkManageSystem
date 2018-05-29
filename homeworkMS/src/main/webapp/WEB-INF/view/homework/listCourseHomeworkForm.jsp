@@ -80,7 +80,7 @@
 				<c:if test="${userType eq 0||userType eq 1}">
   					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 				</c:if>
-				<c:if test="${userType eq 2}">
+				<c:if test="${userType eq 0||userType eq 2}">
 					<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="uploadHomework">提交作业</a>
 				</c:if>
 			</script>
@@ -147,7 +147,7 @@
 					} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
 					, {
 						field : 'DueDate',
-						title : '上交日期',
+						title : '截至日期',
 						width : '15%'
 					}, {
 						title : '操作',
@@ -178,38 +178,57 @@
 							//向服务端发送删除指令
 						});
 					}else if (layEvent === 'uploadHomework') {
-						
+						if(checkDueDate(data.DueDate)){
+							layer
+							.open({
+								type : 2,
+								title : data.courseName+'-提交作业',
+								area : [ '480px', '450px' ],
+								content : 'uploadCourseHomeworkForm',
+								zIndex: layer.zIndex, //重点1
+								success : function(layero, index) {
+									layer.setTop(layero); //重点2
+									var body = layer.getChildFrame('body',
+											index);
+									var iframeWin = window[layero
+											.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+									// console.log(body.html()) //得到iframe页的body内容
+									//body.find('input').val('Hi，我是从父页来的')
+									debugger;
+									body.find('#indexId').val(index);
+									body.find('#homeworkId').val(data.homeworkId);
+								},
+								end : function() {
+									layer.msg("刷新表格")
+									//执行重载
+									table.reload('courseHomeworkTable', {
+										page : {
+											curr : 1
+										//重新从第 1 页开始
+										}
+									}); 
+								}
+							});
+						}else{
 							
-						layer
-						.open({
-							type : 2,
-							title : data.courseName+'-上传作业',
-							area : [ '500px', '400px' ],
-							content : 'uploadCourseHomeworkForm',
-							zIndex: layer.zIndex, //重点1
-							success : function(layero, index) {
-								layer.setTop(layero); //重点2
-								var body = layer.getChildFrame('body',
-										index);
-								var iframeWin = window[layero
-										.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-								// console.log(body.html()) //得到iframe页的body内容
-								//body.find('input').val('Hi，我是从父页来的')
-								debugger;
-								body.find('#indexId').val(index);
-								body.find('#homeworkId').val(data.homeworkId);
-							},
-							end : function() {
-								layer.msg("刷新表格")
-								//执行重载
-								table.reload('courseHomeworkTable', {
-									page : {
-										curr : 1
-									//重新从第 1 页开始
-									}
-								}); 
-							}
-						});
+							layer.open({
+						        type: 1
+						        ,title: "提示信息" //不显示标题栏
+						        ,area: '300px'
+						        ,shade: 0.8
+						        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+						        ,btn: ['关闭']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">'
+						        +'作业截止日期已经到了！ <br><br>需要提交作业请联系任课教师 ！</div>'
+						        ,yes: function(index, layero){
+								  layer.close(index)
+						        } 
+						       
+							});
+							//layer.msg("作业截止日期已经到了")
+						}
 					}
 				});
 
@@ -304,6 +323,32 @@
 				});
 
 			});
+			
+			function getFormatDate(){    
+			    var nowDate = new Date();     
+			    var year = nowDate.getFullYear();    
+			    var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;    
+			    var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();    
+			    // var hour = nowDate.getHours()< 10 ? "0" + nowDate.getHours() : nowDate.getHours();    
+			    // var minute = nowDate.getMinutes()< 10 ? "0" + nowDate.getMinutes() : nowDate.getMinutes();    
+			    // var second = nowDate.getSeconds()< 10 ? "0" + nowDate.getSeconds() : nowDate.getSeconds();    
+			    return year + "-" + month + "-" + date;    
+			}    
+			
+			//查看今日是否小于作业截至日期
+			function checkDueDate(DueDate){ 
+				var Today = getFormatDate();
+			  
+			    var dueDate=new Date(DueDate.replace("-", "/").replace("-", "/"));  
+			   
+			    var today=new Date(Today.replace("-", "/").replace("-", "/"));  
+			    //今日小于截止日期，可以交作业
+			    if(today<dueDate){  
+			        return true;  
+			    }  
+			    return false;  
+			}  
+
 			
 		})
 	</script>

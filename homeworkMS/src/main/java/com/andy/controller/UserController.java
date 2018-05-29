@@ -61,9 +61,9 @@ public class UserController {
 		return "register";
 	}
 
-	@RequestMapping(value = "/testLayui")
+	@RequestMapping(value = "/DashBoard")
 	public String testLayui(Model model) {
-		return "testLayui";
+		return "DashBoard";
 	}
 
 	@ResponseBody
@@ -245,9 +245,11 @@ public class UserController {
 			@RequestParam(required=false,value="userCode") String userCode ,
 			@RequestParam(required=false,value="userType") String userType,
 			@RequestParam(required=false,value="email") String email) {
+		//获取当前用户id
 		String userId = (String) session.getAttribute("userId");
  		Map paramMap = new HashMap<>();
  		JSONObject json = new JSONObject();
+ 		//分页操作
 		int rowFrom = PageUtil.getRowFrom(page, limit);
 		if(rowFrom<0) {
 			json.put("code", 1);

@@ -13,6 +13,7 @@
         http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 	<!-- 开启注解 -->
 	<mvc:annotation-driven>
+		<!--配置格式转换器  -->
 		<mvc:message-converters>
 			<bean
 				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
@@ -44,7 +45,8 @@
 		<property name="prefix" value="/WEB-INF/view/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
-
+	
+	<!-- 配置文件上传的限制 -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize">
@@ -63,7 +65,8 @@
 
 	<mvc:resources mapping="/layui/**" location="/WEB-INF/layui/" />
 	<mvc:resources mapping="/image/**" location="/WEB-INF/image/" />
-
+	
+	<!--配置拦截器  -->
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/*" />
