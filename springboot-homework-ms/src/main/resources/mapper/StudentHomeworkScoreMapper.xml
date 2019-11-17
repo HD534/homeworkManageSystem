@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.StudentHomeworkScoreMapper">
+    <resultMap id="BaseResultMap" type="com.andy.model.StudentHomeworkScore">
+        <id column="student_homework_score_id" property="studentHomeworkScoreId" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="homework_id" property="homeworkId" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="score" property="score" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
+        <result column="updater" property="updater" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="DATE"/>
+        <result column="comment" property="comment" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    student_homework_score_id, student_id, homework_id, creator, score, create_date, updater,
+    update_date,comment
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from studenthomeworkscore
+        where student_homework_score_id = #{studenthomeworkscoreid,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from studenthomeworkscore
+    where student_homework_score_id = #{studenthomeworkscoreid,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.andy.model.StudentHomeworkScore">
+    insert into studenthomeworkscore (student_homework_score_id, student_id,
+    homework_id, creator, score,
+    create_date, updater, update_date,
+    comment)
+    values (#{studenthomeworkscoreid,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR},
+    #{homeworkId,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER},
+    #{createDate,jdbcType=DATE}, #{updater,jdbcType=VARCHAR}, #{updateDate,jdbcType=DATE},
+    #{comment,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.andy.model.StudentHomeworkScore">
+        insert into studenthomeworkscore
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studenthomeworkscoreid != null">
+                student_homework_score_id,
+            </if>
+            <if test="studentId != null">
+                student_id,
+            </if>
+            <if test="homeworkId != null">
+                homework_id,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="score != null">
+                score,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="comment != null">
+                comment,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="studenthomeworkscoreid != null">
+                #{studenthomeworkscoreid,jdbcType=VARCHAR},
+            </if>
+            <if test="studentId != null">
+                #{studentId,jdbcType=VARCHAR},
+            </if>
+            <if test="homeworkId != null">
+                #{homeworkId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                #{score,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=DATE},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.andy.model.StudentHomeworkScore">
+        update studenthomeworkscore
+        <set>
+            <if test="studentId != null">
+                student_id = #{studentId,jdbcType=VARCHAR},
+            </if>
+            <if test="homeworkId != null">
+                homework_id = #{homeworkId,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                score = #{score,jdbcType=INTEGER},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=DATE},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=DATE},
+            </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where student_homework_score_id = #{studenthomeworkscoreid,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.andy.model.StudentHomeworkScore">
+    update studenthomeworkscore
+    set student_id = #{studentId,jdbcType=VARCHAR},
+    homework_id = #{homeworkId,jdbcType=VARCHAR},
+    creator = #{creator,jdbcType=VARCHAR},
+    score = #{score,jdbcType=INTEGER},
+    create_date = #{createDate,jdbcType=DATE},
+    updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=DATE},
+    comment = #{comment,jdbcType=VARCHAR}
+    where student_homework_score_id = #{studenthomeworkscoreid,jdbcType=VARCHAR}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.andy.model.StudentHomeworkScore">
+    update studenthomeworkscore
+    set student_id = #{studentId,jdbcType=VARCHAR},
+    homework_id = #{homeworkId,jdbcType=VARCHAR},
+    creator = #{creator,jdbcType=VARCHAR},
+    score = #{score,jdbcType=INTEGER},
+    create_date = #{createDate,jdbcType=DATE},
+    updater = #{updater,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=DATE}
+    where student_homework_score_id = #{studenthomeworkscoreid,jdbcType=VARCHAR}
+  </update>
+</mapper>

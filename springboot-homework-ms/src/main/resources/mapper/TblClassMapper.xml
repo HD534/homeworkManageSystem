@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.TblClassMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.TblClass">
+		<id column="class_id" property="classId" jdbcType="VARCHAR"/>
+		<result column="class_name" property="className" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="DATE"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+      class_id, class_name, create_date
+   </sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from tblclass
+		where class_id = #{classId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from
+      tblclass
+      where class_id = #{classId,jdbcType=VARCHAR}
+   </delete>
+	<insert id="insert" parameterType="com.andy.model.TblClass">
+      insert into tblclass (
+      class_id, class_name, create_date
+      )
+      values (#{classId,jdbcType=VARCHAR},
+      #{className,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE}
+      )
+   </insert>
+	<insert id="insertSelective" parameterType="com.andy.model.TblClass">
+		insert into tblclass
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="classId != null">
+				class_id,
+			</if>
+			<if test="className != null">
+				class_name,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="classId != null">
+				#{classId,jdbcType=VARCHAR},
+			</if>
+			<if test="className != null">
+				#{className,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.TblClass">
+		update tblclass
+		<set>
+			<if test="className != null">
+				class_name = #{className,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=DATE},
+			</if>
+		</set>
+		where class_id = #{classId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.TblClass">
+      update tblclass
+      set class_name = #{className,jdbcType=VARCHAR},
+      create_date =
+      #{createDate,jdbcType=DATE}
+      where class_id = #{classId,jdbcType=VARCHAR}
+   </update>
+	<select id="selectByClassName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from tblclass
+		where class_name = #{className,jdbcType=VARCHAR}
+	</select>
+
+	<select id="listClassByInstitute" parameterType="Map"
+			resultType="Map">
+      SELECT
+      c.class_name AS "name",
+      c.class_id AS "id"
+      FROM
+      tblclass c
+      LEFT JOIN classInstitute ci ON ci.class_id = c.class_id
+      LEFT JOIN institute i ON i.institute_id = ci.institute_id
+      where i.institute_id = #{instituteId,jdbcType=VARCHAR}
+   </select>
+
+	<select id="listClass" parameterType="Map" resultType="Map">
+		SELECT
+		DISTINCT
+		c.*, i.institute_name ,stuNum.count as stu_count
+		FROM
+		tblclass c
+		LEFT JOIN classInstitute ci ON ci.class_id = c.class_id
+		LEFT JOIN institute i ON i.institute_id = ci.institute_id
+		LEFT JOIN (
+		SELECT count(*) as count,
+		class_id
+		FROM
+		studentclass
+		GROUP BY
+		class_id
+		) AS stuNum ON stuNum.class_id = c.class_id
+		where 1=1
+		<if test="userType == 1">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and c.class_name like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="rowFrom != null">
+			order by c.create_date desc LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="listClassCountNum" parameterType="Map" resultType="int">
+		SELECT
+		count(*)
+		FROM
+		tblclass c
+		LEFT JOIN classInstitute ci ON ci.class_id = c.class_id
+		LEFT JOIN institute i ON i.institute_id = ci.institute_id
+		where 1=1
+		<if test="userType == 1">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and c.class_name like concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+
+	<insert id="insertClassInstitute" parameterType="java.util.Map">
+        insert into classinstitute
+        (class_institute_id,class_id,institute_id)
+        values
+        (#{classInstituteId,jdbcType=VARCHAR},#{classId,jdbcType=VARCHAR},#{instituteId,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

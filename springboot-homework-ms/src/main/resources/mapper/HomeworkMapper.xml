@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.HomeworkMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.Homework">
+		<id column="homework_id" property="homeworkId" jdbcType="VARCHAR"/>
+		<result column="homework_name" property="homeworkName" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="DATE"/>
+		<result column="Due_date" property="DueDate" jdbcType="DATE"/>
+		<result column="publish_date" property="publishDate" jdbcType="DATE"/>
+		<result column="homework_type" property="homeworkType" jdbcType="CHAR"/>
+		<result column="homework_desc" property="homeworkDesc" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+      homework_id, homework_name, create_date, Due_date, publish_date,homework_type,homework_desc
+   </sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from homework
+		where homework_id = #{homeworkId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from
+      homework
+      where homework_id = #{homeworkId,jdbcType=VARCHAR}
+   </delete>
+	<insert id="insert" parameterType="com.andy.model.Homework">
+      insert into homework
+      (homework_id, homework_name, create_date,
+      Due_date, publish_date,
+      homework_type,
+      homework_desc)
+      values (#{homeworkId,jdbcType=VARCHAR},
+      #{homeworkName,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE},
+      #{DueDate,jdbcType=DATE}, #{publishDate,jdbcType=DATE},
+      #{homeworkType,jdbcType=CHAR},
+      #{homeworkDesc,jdbcType=VARCHAR})
+   </insert>
+	<insert id="insertTeacherHomeworkFile" parameterType="Map">
+      insert into
+      teacherHomeworkFile (teacher_homework_file_id,homework_id,
+      teacher_id,file_id)
+      values (#{teacherHomeworkFileId,jdbcType=VARCHAR},
+      #{homeworkId,jdbcType=VARCHAR},
+      #{teacherId,jdbcType=VARCHAR},
+      #{fileId,jdbcType=VARCHAR})
+   </insert>
+	<insert id="insertCourseHomework" parameterType="Map">
+      insert into
+      courseHomework (course_homework_id, homework_id,
+      course_id,create_date)
+      values (#{courseHomeworkId,jdbcType=VARCHAR},
+      #{homeworkId,jdbcType=VARCHAR},
+      #{courseId,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE})
+   </insert>
+	<insert id="insertStudentHomeworkFile" parameterType="Map">
+      insert into
+      studenthomeworkfile (student_homework_file_id, student_id,
+      file_id,homework_id)
+      values (#{studentHomeworkFileId,jdbcType=VARCHAR},
+      #{studentId,jdbcType=VARCHAR},
+      #{fileId,jdbcType=VARCHAR},
+      #{homeworkId,jdbcType=VARCHAR})
+   </insert>
+
+	<insert id="insertStudentHomeworkScore" parameterType="Map">
+		insert into
+		studenthomeworkscore (
+		student_homework_score_id,
+		student_id,
+		homework_id,
+		score ,
+		creator,
+		<if test="comment != null">
+			comment,
+		</if>
+		create_date
+		)
+		values (
+		#{studentHomeworkScoreId,jdbcType=VARCHAR},
+		#{studentId,jdbcType=VARCHAR},
+		#{homeworkId,jdbcType=VARCHAR},
+		#{score,jdbcType=INTEGER},
+		#{creator,jdbcType=VARCHAR},
+		<if test="comment != null">
+			#{comment,jdbcType=VARCHAR},
+		</if>
+		#{createDate,jdbcType=DATE}
+		)
+	</insert>
+
+	<insert id="insertSelective" parameterType="com.andy.model.Homework">
+		insert into homework
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="homeworkId != null">
+				homework_id,
+			</if>
+			<if test="homeworkName != null">
+				homework_name,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="DueDate != null">
+				Due_date,
+			</if>
+			<if test="publishDate != null">
+				publish_date,
+			</if>
+			<if test="homeworkType != null">
+				homework_type,
+			</if>
+			<if test="homeworkDesc != null">
+				homework_desc,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="homeworkId != null">
+				#{homeworkId,jdbcType=VARCHAR},
+			</if>
+			<if test="homeworkName != null">
+				#{homeworkName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+			<if test="DueDate != null">
+				#{DueDate,jdbcType=DATE},
+			</if>
+			<if test="publishDate != null">
+				#{publishDate,jdbcType=DATE},
+			</if>
+			<if test="homeworkType != null">
+				#{homeworkType,jdbcType=CHAR},
+			</if>
+			<if test="homeworkDesc != null">
+				#{homeworkDesc,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Homework">
+		update homework
+		<set>
+			<if test="homeworkName != null">
+				homework_name = #{homeworkName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=DATE},
+			</if>
+			<if test="DueDate != null">
+				Due_date = #{DueDate,jdbcType=DATE},
+			</if>
+			<if test="publishDate != null">
+				publish_date = #{publishDate,jdbcType=DATE},
+			</if>
+			<if test="homeworkType != null">
+				homework_type = #{homeworkType,jdbcType=CHAR},
+			</if>
+			<if test="homeworkDesc != null">
+				homework_desc = #{homeworkDesc,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where homework_id = #{homeworkId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.andy.model.Homework">
+      update
+      homework
+      set homework_name = #{homeworkName,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=DATE},
+      Due_date = #{DueDate,jdbcType=DATE},
+      publish_date = #{publishDate,jdbcType=DATE},
+      homework_type = #{homeworkType,jdbcType=CHAR},
+      homework_desc = #{homeworkDesc,jdbcType=VARCHAR}
+      where homework_id = #{homeworkId,jdbcType=VARCHAR}
+   </update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.Homework">
+      update homework
+      set homework_name = #{homeworkName,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=DATE},
+      Due_date = #{DueDate,jdbcType=DATE},
+      publish_date = #{publishDate,jdbcType=DATE},
+      homework_type = #{homeworkType,jdbcType=CHAR}
+      where homework_id = #{homeworkId,jdbcType=VARCHAR}
+   </update>
+
+	<select id="listHomework" parameterType="Map" resultType="Map">
+		SELECT
+		h.*, thf.file_id,
+		ch.course_id,
+		c.course_name,
+		c.course_desc,
+		u.user_name,
+		t.term_name,
+		i.institute_name
+		FROM
+		homework h
+		LEFT JOIN teacherhomeworkfile thf ON thf.homework_id  = h.homework_id
+		LEFT JOIN coursehomework ch ON ch.homework_id  = h.homework_id
+		LEFT JOIN course c ON
+		c.course_id = ch.course_id
+		LEFT JOIN `user` u ON u.user_id  = thf.teacher_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term t on
+		t.term_id = ct.term_id
+		LEFT JOIN courseinstitute ci on ci.course_id = c.course_id
+		LEFT JOIN institute i on i.institute_id  = ci.institute_id
+		<if test="userType == 2">
+			LEFT JOIN courseclass cc on cc.course_id = c.course_id
+			LEFT JOIN studentclass sc on sc.class_id = cc.class_id
+			LEFT JOIN student stu on stu.student_id  = sc.student_id
+		</if>
+		WHERE 1=1
+<!--		<if test="userType == 1">-->
+<!--			and u.user_id =#{userId,jdbcType=VARCHAR}-->
+<!--		</if>-->
+		<if test="userType == 2">
+			and stu.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="termValue != null">
+			and t.term_value = #{termValue,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and u.user_name like concat('%',
+			#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseId != null">
+			and c.course_id = #{courseId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseName != null">
+			and c.course_name like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY h.create_date DESC,t.term_value DESC,c.course_name DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="listHomeworkCount" parameterType="Map" resultType="int">
+		SELECT
+		count(*)
+		FROM
+		homework h
+		LEFT JOIN
+		teacherhomeworkfile thf ON thf.homework_id = h.homework_id
+		LEFT JOIN
+		coursehomework ch ON ch.homework_id = h.homework_id
+		LEFT JOIN course c ON c.course_id = ch.course_id
+		LEFT JOIN `user` u ON u.user_id  = thf.teacher_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term t on t.term_id = ct.term_id
+		LEFT JOIN courseinstitute ci on ci.course_id = c.course_id
+		LEFT JOIN institute i on i.institute_id = ci.institute_id
+		<if test="userType == 2">
+			LEFT JOIN courseclass cc on cc.course_id = c.course_id
+			LEFT JOIN studentclass sc on sc.class_id = cc.class_id
+			LEFT JOIN student stu on stu.student_id = sc.student_id
+		</if>
+		WHERE 1=1
+		<if test="userType == 1">
+			and u.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userType == 2">
+			and stu.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="termValue != null">
+			and t.term_value = #{termValue,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and u.user_name like concat('%',
+			#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseId != null">
+			and c.course_id = #{courseId,jdbcType=VARCHAR}
+		</if>
+		<if test="courseName != null">
+			and c.course_name like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+
+	<select id="listStudentHomework" parameterType="Map" resultType="Map">
+		select
+		c.course_name,
+		tt.term_name,
+		h.homework_name,
+		h.homework_id,
+		cla.class_name,
+		u.user_code,
+		u.user_id,u.user_name as student_name,
+		stu.student_id,
+		file.file_real_name as student_homework_name,
+		file.fileid,
+		file.create_time as upload_date,
+		shs.score,
+		shs.comment
+		from studenthomeworkfile shf
+		LEFT JOIN `user` u on u.user_id  = shf.student_id
+		LEFT JOIN student stu on stu.user_id  = u.user_id
+		LEFT JOIN studentclass sc on sc.student_id = stu.student_id
+		LEFT JOIN tblclass cla on cla.class_id = sc.class_id
+		LEFT JOIN attachedfile file on file.file_id = shf.file_id
+		LEFT JOIN homework h on h.homework_id = shf.homework_id
+		LEFT JOIN coursehomework ch on ch.homework_id = h.homework_id
+		LEFT JOIN course c on c.course_id = ch.course_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term tt on tt.term_id = ct.term_id
+		LEFT JOIN teachercourse tc on tc.course_id = c.course_id
+		LEFT JOIN teacher t on t.teacher_id = tc.teacher_id
+		LEFT JOIN `user` ut on ut.user_id = t.user_id
+		left join studenthomeworkscore shs on shs.homework_id  = h.homework_id
+		WHERE shs.student_id = stu.student_id
+		<if test="userType == 1">
+			and ut.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userType == 2">
+			and stu.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="termValue != null">
+			and tt.term_value = #{termValue,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userCode != null">
+			and u.user_code like concat('%',
+			#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseId != null">
+			and c.course_id = #{courseId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseName != null">
+			and c.course_name like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkName != null">
+			and h.homework_name like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homework_id = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and cla.class_name like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+
+		ORDER BY file.create_time DESC,tt.term_value DESC,c.course_name DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="listStudentHomeworkCount" parameterType="Map" resultType="int">
+		select
+		count(*)
+		LEFT JOIN `user` u on u.user_id = shf.student_id
+		LEFT JOIN student stu on stu.user_id = u.user_id
+		LEFT JOIN studentclass sc on sc.student_id = stu.student_id
+		LEFT JOIN tblclass cla on cla.class_id = sc.class_id
+		LEFT JOIN attachedfile file on file.file_id = shf.file_id
+		LEFT JOIN homework h on h.homework_id = shf.homework_id
+		LEFT JOIN coursehomework ch on ch.homework_id = h.homework_id
+		LEFT JOIN course c on c.course_id = ch.course_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term tt on tt.term_id = ct.term_id
+		LEFT JOIN teachercourse tc on tc.course_id = c.course_id
+		LEFT JOIN teacher t on t.teacher_id = tc.teacher_id
+		LEFT JOIN `user` ut on ut.user_id = t.user_id
+		left join studenthomeworkscore shs on shs.homework_id = h.homework_id
+		WHERE shs.student_id = stu.student_id
+
+		<if test="userType == 1">
+			and ut.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userType == 2">
+			and stu.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="termValue != null">
+			and tt.term_value = #{termValue,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userCode != null">
+			and u.user_code like concat('%',
+			#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseId != null">
+			and c.course_id = #{courseId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseName != null">
+			and c.course_name like
+			concat('%',#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkName != null">
+			and h.homework_name like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homework_id = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+		<if test="className != null">
+			and cla.class_name like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+
+
+	</select>
+
+	<select id="checkStudentHomeworkScore" parameterType="Map" resultType="Map">
+
+      select * from studenthomeworkscore
+      where
+      student_id = #{studentId,jdbcType=VARCHAR}
+      and homework_id = #{homeworkId,jdbcType=VARCHAR}
+
+   </select>
+
+	<update id="updateStudentHomeworkScore" parameterType="Map">
+		update
+		studenthomeworkscore set
+		score = #{score,jdbcType=INTEGER} ,
+		updater = #{updater,jdbcType=VARCHAR},
+		update_date = #{updateDate,jdbcType=DATE}
+		<if test="comment != null">
+			,comment = #{comment,jdbcType=VARCHAR}
+		</if>
+		where student_id = #{studentId,jdbcType=VARCHAR}
+		and homework_id = #{homeworkId,jdbcType=VARCHAR}
+
+	</update>
+
+
+	<select id="listHomeworkScoreInfo" parameterType="Map" resultType="Map">
+		SELECT i.institute_id,i.institute_name,term.term_name,c.course_name,u.user_code,
+		c.course_id, class.class_id,class.class_name,teacher.user_name as teacher_name,
+		h.homework_name,u.user_name as student_name,stu.student_id,shc.score,shc.comment,
+		case when updater is NULL THEN shc.create_date ELSE shc.update_date END as score_date
+		from studenthomeworkscore shc
+		LEFT JOIN student stu on stu.student_id = shc.student_id
+		LEFT JOIN `user` u on u.user_id = stu.user_id
+		LEFT JOIN homework h on h.homework_id = shc.homework_id
+		LEFT JOIN coursehomework ch on ch.homework_id = h.homework_id
+		LEFT JOIN course c on c.course_id = ch.course_id
+		LEFT JOIN institute i on i.institute_id = u.institute_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term term on term.term_id = ct.term_id
+		LEFT JOIN studentclass sc on sc.student_id = stu.student_id
+		LEFT JOIN tblclass class on class.class_id = sc.class_id
+		LEFT JOIN teachercourse tr on tr.course_id = c.course_id
+		LEFT JOIN teacher tea on tea.teacher_id = tr.teacher_id
+		LEFT JOIN `user` teacher on teacher.user_id = tea.user_id
+		WHERE 1=1
+		<if test="userType == 1">
+			and teacher.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userType == 2">
+			and u.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="termValue != null">
+			and term.term_value = #{termValue,jdbcType=VARCHAR}
+		</if>
+
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseName != null">
+			and c.course_name like concat('%',
+			#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="className != null">
+			and class.class_name like concat('%',
+			#{className,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="homeworkName != null">
+			and h.homework_name like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userCode != null">
+			and u.user_code like
+			concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userName != null">
+			and u.user_name like
+			concat('%',#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="className != null">
+			and cla.className like
+			concat('%',#{className,jdbcType=VARCHAR},'%')
+		</if>
+
+		ORDER BY shc.create_date DESC, h.homework_name DESC, c.course_name DESC
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="listHomeworkScoreCount" parameterType="Map" resultType="int">
+		SELECT count(*)
+		from studenthomeworkscore shc
+		LEFT JOIN student stu on stu.student_id = shc.student_id
+		LEFT JOIN `user` u on u.user_id = stu.user_id
+		LEFT JOIN homework h on h.homework_id = shc.homework_id
+		LEFT JOIN coursehomework ch on ch.homework_id = h.homework_id
+		LEFT JOIN course c on c.course_id = ch.course_id
+		LEFT JOIN institute i on i.institute_id = u.institute_id
+		LEFT JOIN courseterm ct on ct.course_id = c.course_id
+		LEFT JOIN term term on term.term_id = ct.term_id
+		LEFT JOIN studentclass sc on sc.student_id = stu.student_id
+		LEFT JOIN tblclass class on class.class_id = sc.class_id
+		LEFT JOIN teachercourse tr on tr.course_id = c.course_id
+		LEFT JOIN teacher tea on tea.teacher_id = tr.teacher_id
+		LEFT JOIN `user` teacher on teacher.user_id = tea.user_id
+		WHERE 1=1
+		<if test="userType == 1">
+			and teacher.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="userType == 2">
+			and u.user_id =#{userId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="termValue != null">
+			and term.term_value  = #{termValue,jdbcType=VARCHAR}
+		</if>
+
+		<if test="instituteId != null">
+			and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="courseName != null">
+			and c.course_name like concat('%',
+			#{courseName,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="className != null">
+			and class.class_name like concat('%',
+			#{className,jdbcType=VARCHAR},'%')
+		</if>
+
+		<if test="homeworkName != null">
+			and h.homework_name like
+			concat('%',#{homeworkName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userCode != null">
+			and u.user_code like
+			concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userName != null">
+			and u.user_name like
+			concat('%',#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="homeworkId != null">
+			and h.homework_id = #{homeworkId,jdbcType=VARCHAR}
+		</if>
+
+	</select>
+
+</mapper>

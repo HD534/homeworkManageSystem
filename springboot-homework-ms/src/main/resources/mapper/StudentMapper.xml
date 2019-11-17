@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.StudentMapper">
+    <resultMap id="BaseResultMap" type="com.andy.model.Student">
+        <id column="studentId" property="studentId" jdbcType="VARCHAR"/>
+        <result column="userId" property="userId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    student_id, user_id
+  </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from student
+        where student_id = #{studentId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from student
+    where student_id = #{studentId,jdbcType=VARCHAR}
+  </delete>
+
+    <insert id="insert" parameterType="com.andy.model.Student">
+    insert into student (student_id, user_id)
+    values (#{studentId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+  </insert>
+
+    <insert id="insertSelective" parameterType="com.andy.model.Student">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">
+                student_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">
+                #{studentId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertStudentClass" parameterType="Map">
+    insert into studentclass (student_class_id,student_id, class_id)
+
+    values (#{studentClassId,jdbcType=VARCHAR},#{studentId,jdbcType=VARCHAR}, #{classId,jdbcType=VARCHAR})
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Student">
+        update student
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where student_id = #{studentId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.andy.model.Student">
+    update student
+    set user_id = #{userId,jdbcType=VARCHAR}
+    where student_id = #{studentId,jdbcType=VARCHAR}
+  </update>
+
+    <select id="listStudent" resultType="map" parameterType="Map">
+        select
+        u.*,c.class_name,c.class_id, i.institute_name, i.institute_id
+        from user u
+        left join student s on u.user_id = s.user_id
+        left join studentClass sc on sc.student_id = s.student_id
+        left join tblclass c on c.class_id = sc.class_id
+        left join institute i on i.institute_id = u.institute_id
+        where u.user_type=2
+        <if test="userCode != null">
+            and u.user_code like
+            concat('%',#{userCode,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="userName != null">
+            and u.user_name like
+            concat('%',#{userName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="instituteId != null">
+            and i.institute_id = #{instituteId,jdbcType=VARCHAR}
+        </if>
+        <if test="className != null">
+            and c.class_nName like
+            concat('%',#{className,jdbcType=VARCHAR},'%')
+        </if>
+        order by c.class_name desc
+        <if test="rowFrom != null">
+            LIMIT #{rowFrom,jdbcType=INTEGER} ,#{limit,jdbcType=INTEGER}
+        </if>
+
+    </select>
+
+    <select id="listStudentCountNum" resultType="int" parameterType="Map">
+        select
+        count(*)
+        from user u
+        left join student s on u.user_id = s.user_id
+        left join studentClass sc on sc.student_id = s.student_id
+        left join tblclass c on c.class_id = sc.class_id
+        left join institute i on i.institute_id = u. institute_id
+        where u.user_type=2
+        <if test="userCode != null">
+            and u.user_code = #{userCode,jdbcType=VARCHAR}
+        </if>
+
+    </select>
+
+</mapper>

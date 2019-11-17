@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.UserMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.User">
+		<id column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="user_code" property="userCode" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="user_type" property="userType" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="INTEGER" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="institute_id" property="instituteId" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="DATE" />
+	</resultMap>
+	<sql id="Base_Column_List">
+      user_id, user_code, user_name, password, user_type, age, sex,
+      email, phone,institute_id,
+      create_date
+   </sql>
+
+	<select id="selectByUserName" parameterType="java.lang.String"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_name = #{userName,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByUserCode" parameterType="java.lang.String"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_code = #{userCode,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByUserCodeAndType" parameterType="Map"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_code = #{userCode,jdbcType=VARCHAR}
+		and user_type =
+		#{userType,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getUserInfoByUserId" parameterType="Map" resultType="Map">
+		select u.user_id,u.user_name,u.age,u.email,u.sex,u.user_code,u.phone
+		<if test="userType == 1">
+			,i.institute_name
+		</if>
+		<if test="userType == 2">
+			,i.institute_name,c.class_name as "class_name"
+		</if>
+		from user u
+		<if test="userType == 1">
+			left join institute i on i.institute_id = u.institute_id
+		</if>
+		<if test="userType == 2">
+			left join student stu on stu.user_id = u.user_id
+			left join
+			studentClass sc on sc.student_id = stu.student_id
+			left join tblclass c
+			on c.class_id = sc.class_id
+			left join institute i on i.institute_id =
+			u.institute_id
+		</if>
+		where u.user_id = #{userId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="listUser" resultType="Map" parameterType="Map">
+		SELECT
+		user_id,
+		user_code,
+		user_name,
+		user_type,
+		sex,
+		age,
+		email,
+		phone,
+		i.institute_name,
+		CASE
+		WHEN user_type = 0 THEN
+		'管理员'
+		WHEN user_type = 1 THEN
+		'教师'
+		WHEN user_type = 2 THEN
+		'学生'
+		END AS "user_type_name"
+		FROM
+		USER u
+		LEFT JOIN institute i ON i.institute_id = u.institute_id
+		where 1 = 1
+		<if test="userType != null">
+			and user_type = #{userType,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and user_name like concat('%',#{userName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="userCode != null">
+			and user_code like concat('%',#{userCode,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="email != null">
+			and email like concat('%',#{email,jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY user_type
+		<if test="rowFrom != null">
+			LIMIT #{rowFrom,jdbcType=INTEGER} ,
+			#{limit,jdbcType=INTEGER}
+		</if>
+
+	</select>
+
+	<select id="listUserCountNum" resultType="int" parameterType="Map">
+		SELECT
+		count(*)
+		FROM
+		USER u
+		LEFT JOIN institute i ON i.institute_id = u.institute_id
+		where 1 = 1
+		<if test="userType != null">
+			and user_type = #{userType,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null">
+			and user_name like #{userName,jdbcType=VARCHAR}
+		</if>
+		<if test="email != null">
+			and email like #{email,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from user
+      where user_id = #{userId,jdbcType=VARCHAR}
+   </delete>
+
+	<insert id="insert" parameterType="com.andy.model.User">
+      insert into user (user_id,
+      user_code, user_name,
+      password, user_type, age,
+      sex, email,phone, institute_id,
+      create_date)
+      values (#{userId,jdbcType=VARCHAR},
+      #{userCode,jdbcType=VARCHAR},
+      #{userName,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR}, #{userType,jdbcType=VARCHAR},
+      #{age,jdbcType=INTEGER},
+      #{sex,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR},
+      #{instituteId,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE})
+   </insert>
+
+	<insert id="insertSelective" parameterType="com.andy.model.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="userCode != null">
+				user_code,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="userType != null">
+				user_type,
+			</if>
+			<if test="age != null">
+				age,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="instituteId != null">
+				institute_id,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="userCode != null">
+				#{userCode,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="userType != null">
+				#{userType,jdbcType=VARCHAR},
+			</if>
+			<if test="age != null">
+				#{age,jdbcType=INTEGER},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="instituteId != null">
+				#{instituteId,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+
+	<insert id="insertUserStudent" parameterType="Map"  >
+      insert into student (student_id,user_id) values (#{studentId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR})
+   </insert>
+
+	<insert id="insertUserTeacher" parameterType="Map" >
+      insert into teacher (teacher_id,user_id) values (#{teacherId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR})
+   </insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.User">
+		update user
+		<set>
+			<if test="userName !=null">
+				user_name = #{userName},
+			</if>
+			<if test="age != null">
+				age = #{age,jdbcType=INTEGER},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.User">
+      update user
+      set
+      user_code = #{userCode,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      sex = #{sex,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      institute_id = #{instituteId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=DATE}
+      where user_id = #{userId,jdbcType=VARCHAR}
+   </update>
+	<update id="updateUserPassword" parameterType="Map">
+      update user
+      set
+      password = #{userNewPassword,jdbcType=VARCHAR}
+      where user_id = #{userId,jdbcType=VARCHAR}
+   </update>
+</mapper>

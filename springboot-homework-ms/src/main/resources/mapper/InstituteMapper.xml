@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.InstituteMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.Institute">
+		<id column="institute_id" property="instituteId" jdbcType="VARCHAR"/>
+		<result column="institute_name" property="instituteName" jdbcType="VARCHAR"/>
+		<result column="create_date" property="createDate" jdbcType="DATE"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+      institute_id, institute_name, create_date
+   </sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from institute
+		where institute_id = #{instituteId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from
+      institute
+      where institute_id = #{instituteId,jdbcType=VARCHAR}
+   </delete>
+	<insert id="insert" parameterType="com.andy.model.Institute">
+      insert into institute
+      (institute_id, institute_name, create_date)
+      values
+      (#{instituteId,jdbcType=VARCHAR}, #{instituteName,jdbcType=VARCHAR},
+      #{createDate,jdbcType=DATE}
+      )
+   </insert>
+	<insert id="insertSelective" parameterType="com.andy.model.Institute">
+		insert into institute
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="instituteid != null">
+				institute_id,
+			</if>
+			<if test="institutename != null">
+				institute_name,
+			</if>
+			<if test="createdate != null">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="instituteid != null">
+				#{instituteid,jdbcType=VARCHAR},
+			</if>
+			<if test="institutename != null">
+				#{institutename,jdbcType=VARCHAR},
+			</if>
+			<if test="createdate != null">
+				#{createdate,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Institute">
+		update institute
+		<set>
+			<if test="institutename != null">
+				institute_name = #{institutename,jdbcType=VARCHAR},
+			</if>
+			<if test="createdate != null">
+				create_date = #{createdate,jdbcType=DATE},
+			</if>
+		</set>
+		where institute_id = #{instituteid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.Institute">
+      update institute
+      set institute_name = #{institutename,jdbcType=VARCHAR},
+      create_date = #{createdate,jdbcType=DATE}
+      where institute_id = #{instituteid,jdbcType=VARCHAR}
+   </update>
+
+	<select id="selectByInstituteName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from institute
+		where institute_name = #{instituteName,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByInstituteId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from institute
+		where institute_id = #{instituteId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="listInstitute" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from institute
+	</select>
+
+	<select id="selectUserInstitute" resultType="Map" parameterType="Map">
+		SELECT
+		i.institute_name as "name" ,i.institute_id as "id"
+		FROM
+		institute i
+		<if test="userType == 1||userType == 2">
+			LEFT JOIN USER u ON u.institute_id = i.institute_id
+			WHERE
+			u.user_id =
+			#{userId,jdbcType=VARCHAR}
+		</if>
+
+	</select>
+
+
+</mapper>

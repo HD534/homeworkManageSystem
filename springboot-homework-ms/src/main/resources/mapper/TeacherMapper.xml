@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andy.mapper.TeacherMapper">
+	<resultMap id="BaseResultMap" type="com.andy.model.Teacher">
+		<id column="teacher_id" property="teacherId" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+      teacher_id, user_id
+   </sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from teacher
+		where teacher_id = #{teacherId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectTeacherByUserId" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+      select
+      *
+      from teacher t
+      left join user u on u.user_id =
+      t.user_id
+      where t.user_id = #{teacherId,jdbcType=VARCHAR}
+   </select>
+
+	<select id="listStudentsByCondition" resultType="Map"
+			parameterType="Map">
+		select * from student s
+		left join studentcourse sc on sc.student_id = s.student_id
+		left join course c on c.course_id = sc.course_id
+		left join teachercourse tc on tc.course_id = c.course_id
+		where tc.teacher_id = #{teacherid,jdbcType=VARCHAR}
+		<if test="courseid != null">
+			and c.course_id = #{courseid,jdbcType=VARCHAR},
+		</if>
+		<if test="studentid != null">
+			and s.student_id = #{studentid,jdbcType=VARCHAR},
+		</if>
+
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+      delete from
+      teacher
+      where teacher_id = #{teacherId,jdbcType=VARCHAR}
+   </delete>
+	<insert id="insert" parameterType="com.andy.model.Teacher">
+      insert into teacher
+      (teacher_id, user_id)
+      values (#{teacherId,jdbcType=VARCHAR},
+      #{userId,jdbcType=VARCHAR})
+   </insert>
+	<insert id="insertSelective" parameterType="com.andy.model.Teacher">
+		insert into teacher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="teacherId != null">
+				teacher_id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="teacherId != null">
+				#{teacherId,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.andy.model.Teacher">
+		update teacher
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where teacher_id = #{teacherId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.andy.model.Teacher">
+      update teacher
+      set
+      user_id = #{userId,jdbcType=VARCHAR}
+      where teacher_id =
+      #{teacherId,jdbcType=VARCHAR}
+   </update>
+
+	<insert id="insertTeacherCourse" parameterType="Map">
+      insert into
+      teacherCourse (teacher_course_id,course_id,teacher_id)
+      values (
+      #{teacherCourseId,jdbcType=VARCHAR},
+      #{courseId,jdbcType=VARCHAR},
+      #{teacherId,jdbcType=VARCHAR} )
+   </insert>
+
+	<select id="selectCourseByCourseAndTerm" resultType="Map"
+			parameterType="Map">
+
+      SELECT c.*,t.* from course c
+      LEFT JOIN teachercourse tc on tc.course_id = c.course_id
+      LEFT JOIN teacher t on t.teacher_id = tc.teacher_id
+      LEFT JOIN courseterm ct on ct.course_id = c.course_id
+      LEFT JOIN term te on te.term_id = ct.term_id
+      where t.user_id = #{userId,jdbcType=VARCHAR}
+      and c.course_name = #{courseName,jdbcType=VARCHAR}
+      and te.term_name = #{termName,jdbcType=VARCHAR}
+
+   </select>
+
+	<select id="listTeacherByInstituteId" resultType="Map"
+			parameterType="Map">
+      select u.user_name as name,u.user_id as id from user u
+      where u.institute_id =  #{instituteId,jdbcType=VARCHAR}
+      and user_type = 1
+   </select>
+
+	<select id="listTeacherByInstitute" resultType="Map"
+			parameterType="Map">
+
+      select * from user u
+      left join institute i on i.institute_id = u.institute_id
+      where i.institute_name =  #{instituteName,jdbcType=VARCHAR}
+
+   </select>
+
+</mapper>

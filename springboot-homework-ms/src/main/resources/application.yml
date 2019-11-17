@@ -1,0 +1,39 @@
+homework:
+  tempPath: /Users/andy/workspace/homeworkMS/server/files/temp
+  uploadPath : /Users/andy/workspace/homeworkMS/server/files
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./h2/homework
+    driver-class-name: org.h2.Driver
+    username: root
+    password: root
+
+  h2:
+    console:
+      enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+
+  mvc:
+    view:
+      prefix: /WEB-INF/view/
+      suffix: .jsp
+
+  resources:
+    static-locations: /WEB-INF/
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.andy.model
+
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+logging:
+  level:
+    com.andy.mapper: debug
